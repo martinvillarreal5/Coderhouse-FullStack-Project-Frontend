@@ -1,0 +1,36 @@
+[
+	{
+		"id": 0,
+		"name": "Prod 0",
+		"timestamp": "ts0",
+		"description": "lorem",
+		"code": "code0",
+		"thumbnail": "url0",
+		"price": 1,
+		"stock": 1
+	},
+	{
+		"id": null,
+		"timestamp": "2022-07-14T23:29:44.651Z",
+		"price": null,
+		"stock": null
+	},
+	{
+		"id": null,
+		"timestamp": "2022-07-14T23:29:57.399Z",
+		"price": null,
+		"stock": null
+	},
+	{
+		"id": null,
+		"timestamp": "2022-07-14T23:30:39.277Z",
+		"price": null,
+		"stock": null
+	},
+	{
+		"id": null,
+		"timestamp": "2022-07-14T23:36:19.038Z",
+		"price": null,
+		"stock": null
+	}
+]
