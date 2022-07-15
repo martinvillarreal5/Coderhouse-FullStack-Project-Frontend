@@ -26,7 +26,7 @@ class Container {
             // Archivo existente
             !array.length 
                 ? object.id = 0 
-                : object.id = array.slice(-1).id + 1;
+                : object.id = array[array.length - 1].id + 1;
             array.push(object);
 
             await fs.writeFile(this.file, JSON.stringify(array, null, '\t'));
