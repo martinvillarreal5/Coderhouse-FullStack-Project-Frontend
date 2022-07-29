@@ -1,5 +1,5 @@
-const { Container } = require('../utils/Container');
-const { Cart } = require('../utils/Cart');
+import Container from '../utils/Container.js';
+import Cart from '../utils/Cart.js';
 
 // Base de productos
 const products = new Container('/src/db/products.json');
@@ -87,4 +87,4 @@ const deleteProductInCart = async (req, res) => {
     }
 }
 
-module.exports = { newCart, deleteCart, getAllProductsFromCart, saveProductToCart, deleteProductInCart } 
+export { newCart, deleteCart, getAllProductsFromCart, saveProductToCart, deleteProductInCart } 

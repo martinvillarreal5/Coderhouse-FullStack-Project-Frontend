@@ -1,4 +1,4 @@
-class Cart {
+export default class Cart {
     constructor(object={}) {
         //Check if constructor work
         this.id = object.id || 0;
@@ -57,7 +57,3 @@ class Cart {
         
     }
 }
-
-module.exports = {
-    Cart: Cart,
-};

@@ -1,7 +1,7 @@
-const { Router } = require('express');
+import { Router } from 'express';
 const router = Router();
 
-const { newCart, deleteCart, getAllProductsFromCart, saveProductToCart, deleteProductInCart } = require('../controllers/cartController.js');
+import { newCart, deleteCart, getAllProductsFromCart, saveProductToCart, deleteProductInCart } from '../controllers/cartController.js';
 
 // // Crea un carrito y devuelve su id
 router.post('/', newCart);
@@ -13,4 +13,5 @@ router.get('/:id/products', getAllProductsFromCart);
 router.post('/:id/products', saveProductToCart);
 // // Elimina un producto de un carrito según sus id
 router.delete('/:id/products/:id_prod', deleteProductInCart);
-module.exports = router;
+
+export default router;

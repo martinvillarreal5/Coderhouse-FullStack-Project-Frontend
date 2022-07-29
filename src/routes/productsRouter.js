@@ -1,8 +1,8 @@
-const { Router } = require('express');
+import { Router } from 'express';
 const router = Router();
 
-const { getProducts, getProductById, saveProduct, updateProduct, deleteProduct } = require('../controllers/productController.js');
-const { checkAuth } = require('../utils/checkAuth.js');
+import { getProducts, getProductById, saveProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
+import checkAuth from '../utils/checkAuth.js';
 
 const admin = true;
 const checkAdmin = checkAuth(admin)
@@ -13,4 +13,4 @@ router.post('/', checkAdmin, saveProduct);
 router.put('/:id', checkAdmin, updateProduct);
 router.delete('/:id', checkAdmin, deleteProduct);
 
-module.exports = router;
+export default router;

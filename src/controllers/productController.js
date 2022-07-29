@@ -1,5 +1,5 @@
-const { Container } = require('../utils/Container');
-const { Product } = require('../utils/Product');
+import Container from '../utils/Container.js';
+import Product from '../utils/Product.js';
 
 // Base de productos
 const products = new Container('src/db/products.json');
@@ -26,6 +26,8 @@ const getProductById = async (req, res) => {
 const saveProduct = async (req, res) => {
     try {
         const { title, description, thumbnail, price, stock, code } = req.body;
+        //validar cada dato de arriba 
+        
         const product = new Product(title, description, thumbnail, Number(price), Number(stock), code);
         let id = await products.save(product);
         res.status(201).json(id);
@@ -61,4 +63,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProducts, getProductById, saveProduct, updateProduct, deleteProduct }
+export { getProducts, getProductById, saveProduct, updateProduct, deleteProduct };

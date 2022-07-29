@@ -1,6 +1,7 @@
-const fs = require('fs').promises;
-const fstest = require('fs')
-class Container {
+import { promises as fs } from 'fs';
+import { promises } from 'fs';
+
+export default class Container {
     constructor(file) {
         this.file = file;
         console.log(file)
@@ -9,7 +10,7 @@ class Container {
     async getById(id) {
         // Recibe un id y devuelve el objeto con ese id, o null si no está.
         try {
-            let array = JSON.parse(await fstest.promises.readFile(this.file, 'utf-8'));
+            let array = JSON.parse(await promises.readFile(this.file, 'utf-8'));
             const object = array.find(object => object.id === id);
             return object ? object : null;
         } catch (err) {
@@ -101,7 +102,3 @@ class Container {
         }
     }
 }
-
-module.exports = {
-    Container: Container,
-};

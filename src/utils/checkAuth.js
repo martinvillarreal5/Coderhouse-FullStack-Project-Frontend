@@ -15,4 +15,4 @@ const checkAuth = (admin)=>{
         }
     })
 }
-module.exports = { checkAuth };
+export default checkAuth;

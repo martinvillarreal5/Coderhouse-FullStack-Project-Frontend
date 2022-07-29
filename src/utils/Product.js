@@ -1,4 +1,4 @@
-class Product {
+export default class Product {
     constructor(title, description, thumbnail, price, stock, code) {
         this.id = 0;
         this.timestamp = new Date(Date.now());
@@ -10,7 +10,3 @@ class Product {
         this.stock = stock;
     }
 }
-
-module.exports = {
-    Product: Product,
-};
