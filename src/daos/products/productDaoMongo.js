@@ -1,16 +1,27 @@
-import MongoContainer from "../../containers/MongoContainer";
+import MongoContainer from "../../containers/MongoContainer.js";
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-class ProductDaoMongo extends ContainerMongo {
+const productSchema = new Schema({
+    title: { type: String, required: true },
+    price: { type: Number, required: true },
+    thumbnail: { type: String, required: true },
+    stock: { type: Number, required: true },
+    description: { type: String, required: true },
+    code: { type: String, required: true },
+    timestamp: { type: String, required: true },
+})
+/*
+productSchema.set('toJSON',{
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id;
+        delete returnedObject._id; 
+    }
+}) */
+
+class ProductDaoMongo extends MongoContainer {
     constructor() {
-        super('products', {
-            title: { type: String, required: true },
-            price: { type: Number, required: true },
-            thumbnail: { type: String, required: true },
-            stock: { type: Number, required: true },
-            description: { type: String, required: true },
-            code: { type: String, required: true },
-            timestamp: { type: String, required: true },
-        });
+        super('Product', productSchema);
     }
 }
 

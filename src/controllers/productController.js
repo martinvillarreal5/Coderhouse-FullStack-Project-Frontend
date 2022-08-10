@@ -1,11 +1,11 @@
 
-import { ProductDao } from '../daos/index.js';
+//import { ProductDao } from '../daos/index.js';
+import productServices from '../services/product/ProductServices.js';
 
-const getProductById = async (req, res) => {
+const getProductById = async /* ver si hace falta poner estos asyncs, ya que el container o service ya lo tiene*/(req, res) => {
     try {
-        const id = Number(req.params.id);
-        const product = await ProductDao.getById(id);
-        if (!product) throw 'producto no encontrado';
+        const id = req.params.id;
+        const product = await productServices.getProductById(id);
         res.status(200).json(product);
     } catch (err) {
         res.status(500).json({ error: err });
@@ -13,7 +13,8 @@ const getProductById = async (req, res) => {
 }
 const getProducts = async (req, res) => {
     try {
-        res.json(await ProductDao.getAll());
+        const products = await productServices.getProducts()
+        res.json(products);
     } catch (err) {
         res.status(500).json({ error: err });
     }
@@ -21,13 +22,9 @@ const getProducts = async (req, res) => {
 const saveProduct = async (req, res) => {
     try {
         const product = {...req.body};
-        //validar cada dato de arriba 
-        /*
-        const product = new Product(title, description, thumbnail, Number(price), Number(stock), code);
-        let id = await products.save(product);
-        res.status(201).json(id);
-        */
-        ProductDao.save(product)
+        //validar cada dato de arriba ?
+        const savedProductId = await productServices.saveProduct(product)
+        res.status(201).json('Saved product id: ' + savedProductId);
     } catch (err) {
         res.status(500).json({ error: err });
     }
@@ -35,13 +32,9 @@ const saveProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const id = Number(req.params.id);
-        const product = await products.getById(id);
-        if (!product) throw 'producto no encontrado';
-        const { title, description, thumbnail, price, stock, code } = req.body;
-        modifiedProduct = new Product(title, description, thumbnail, Number(price), Number(stock), code);
-        await products.updateById(id, modifiedProduct);
-        res.status(200).json('Producto modificado');
+        const id = req.params.id;
+        const updatedProductId = await productServices.updateProduct(id, modifiedProduct);
+        res.status(200).json('Updated product id: ' + updatedProductId);
     } catch (err) {
         res.status(500).json({ error: err });
     }
@@ -49,15 +42,18 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        const id = Number(req.params.id);
-        const product = await products.getById(id);
-        if (!product) throw 'producto no encontrado';
-
-        await products.deleteById(id);
-        res.status(200).json('Producto eliminado');
+        const id = req.params.id;
+        const deletedProduct = await productServices.deleteProduct(id);
+        res.status(200).json('Product deleted: ' + deletedProduct);
     } catch (err) {
         res.status(500).json({ error: err });
     }
 }
 
-export { getProducts, getProductById, saveProduct, updateProduct, deleteProduct };
+export { 
+    getProducts,
+    getProductById, 
+    saveProduct, 
+    updateProduct, 
+    deleteProduct 
+};

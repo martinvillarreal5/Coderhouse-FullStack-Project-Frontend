@@ -2,59 +2,81 @@
 import mongoose from "mongoose";
 import dbConfig from "../dbConfig.js";
 
-await mongoose.connect(dbConfig.mongodb.connectionString)
+await mongoose.connect(dbConfig.mongodb.connectionString,)
     .then(() => console.log("DB Connection Successfull!"))
     .catch((err) => {
         console.log('Error en la conección con mongodb: ', err);
-    });
-
-console.log("Conexión establecida con Mongo")
+    })
+//research when to close a conection
 
 class MongoContainer {
     constructor(collectionName, schema) {
-        this.model = mongoose.model(collectionName, new mongoose.Schema(schema));
+        this.model = mongoose.model(collectionName, schema);
     }
 
-    getById = async (id) => {
+    async getById(id) {
         try {
             const object = await this.model.findById(id);
             return object ? object : null
         } catch (err) {
-            console.log('Error en método getById: ', err);
+            console.log('Error in getById Method: ', err);
         }
     }
 
-    getAll = async () => {
+    async getAll() {
         try {
-           return await this.model.find({});
+            return await this.model.find({});
         } catch (err) {
-            console.log('Error en método getAll: ', err);
+            console.log('Error in getAll Method: ', err);
         }
-    } 
+    }
 
-    save = async (object) => {
+    async save(object) {
         try {
-            object.timestamp = Date.now();
+            object.timestamp = Date.now(); //aqui?
             const newObject = new this.model(object);
             const savedObject = await newObject.save();
-            return savedObject.id; 
-        } catch (err) { 
-            console.log('Error en método save: ', err);
+            return savedObject._id;
+        } catch (err) {
+            console.log('Error in Save Method: ', err);
         }
     }
 
-    update = async (req, res) => {
+    async update(id, data) {
         try {
-            const updatedObject = await Model.findByIdAndUpdate(
-                req.params.id,
+            const updatedObject = await this.model.findByIdAndUpdate(
+                id,
+                //{runValidators: true}, parece que tiene limitaciones essta validacion, luego cambiar a un find y luego un save con validacion entre medio
                 {
-                    $set: req.body,
+                    $set: data,
                 },
-                { new: true }
+                { new: true } // sin esto, la funcion devuelve el objeto anterior a la modificacion
             );
-            res.status(200).json(updatedModel);
+            return (updatedObject._id);
         } catch (err) {
-            res.status(500).json(err);
+            console.log('Error in Update Method: ', err);
+        }
+    }
+    async deleteById(id) {
+        // Elimina del archivo el objeto con el id buscado.
+        try {
+            const deletedProduct = await this.model.findByIdAndRemove(
+                id 
+                // buscar parametro para que solo devuelva la id, y cambiarlos
+            );
+            return deletedProduct;
+        } catch (err) {
+            console.log('Error in deleteById Method: ', err);
+        }
+    }
+
+    async deleteAll() {
+        // Elimina todos los objetos presentes en el archivo.
+        const collectionName = this.model.collection.collectionName //async??
+        try {
+            await mongoose.connection.db.dropCollection(collectionName)//async??
+        } catch (err) {
+            console.log('Error in deleteAll Method: ', err);
         }
     }
 }

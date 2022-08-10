@@ -3,20 +3,23 @@ dotenv.config();
 
 let ProductDao;
 let CartDao;
+try {
+  switch (process.env.DATABASE || "mongo") {
+    case "mongo":
+      const { default: ProductDaoMongo } = await import(
+        "./products/productDaoMongo.js"
+      );
+      /* const { default: CartDaoMongo } = await import(
+        "./carts/cartDaoMongo.js"
+      ); */
 
-switch (process.env.DATABASE || "mongo") {
-  case "mongo":
-    const { default: ProductDaoMongo } = await import(
-      "./products/productDaoMongo"
-    );
-    const { default: CartDaoMongo } = await import(
-      "./carts/cartDaoMongo"
-    );
+      ProductDao = ProductDaoMongo;
+      /* CartDao = CartDaoMongo; */
 
-    ProductDao = ProductDaoMongo;
-    CartDao = CartDaoMongo;
-
-    break;
+      break;
+  }
+} catch (error) {
+  console.log('Error in Dao index: ' + error)
 }
 
-export { ProductDao, CartDao };
+export { ProductDao/* , CartDao  */ };
