@@ -1,5 +1,3 @@
-
-//import { ProductDao } from '../daos/index.js';
 import productServices from '../services/product/ProductServices.js';
 
 const getProductById = async /* ver si hace falta poner estos asyncs, ya que el container o service ya lo tiene*/(req, res) => {
@@ -22,7 +20,6 @@ const getProducts = async (req, res) => {
 const saveProduct = async (req, res) => {
     try {
         const product = {...req.body};
-        //validar cada dato de arriba ?
         const savedProductId = await productServices.saveProduct(product)
         res.status(201).json('Saved product id: ' + savedProductId);
     } catch (err) {
@@ -33,7 +30,10 @@ const saveProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const id = req.params.id;
-        const updatedProductId = await productServices.updateProduct(id, modifiedProduct);
+        console.log(id)
+        const data = req.body
+        console.log(data)
+        const updatedProductId = await productServices.updateProduct(id, data);
         res.status(200).json('Updated product id: ' + updatedProductId);
     } catch (err) {
         res.status(500).json({ error: err });

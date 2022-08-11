@@ -3,9 +3,12 @@ dotenv.config();
 
 let ProductDao;
 let CartDao;
+
+const testDB = "mongo"
 try {
-  switch (process.env.DATABASE || "mongo") {
+  switch (process.env.DATABASE || testDB) {
     case "mongo":
+      console.log("mongodb selected in daos index");
       const { default: ProductDaoMongo } = await import(
         "./products/productDaoMongo.js"
       );
@@ -13,7 +16,7 @@ try {
         "./carts/cartDaoMongo.js"
       ); */
 
-      ProductDao = ProductDaoMongo;
+      ProductDao = new ProductDaoMongo;
       /* CartDao = CartDaoMongo; */
 
       break;

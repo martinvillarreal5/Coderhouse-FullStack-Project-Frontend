@@ -12,6 +12,7 @@ await mongoose.connect(dbConfig.mongodb.connectionString,)
 class MongoContainer {
     constructor(collectionName, schema) {
         this.model = mongoose.model(collectionName, schema);
+        //console.log(this.model.collection.collectionName)
     }
 
     async getById(id) {
@@ -42,7 +43,7 @@ class MongoContainer {
         }
     }
 
-    async update(id, data) {
+    async updateById(id, data) {
         try {
             const updatedObject = await this.model.findByIdAndUpdate(
                 id,
