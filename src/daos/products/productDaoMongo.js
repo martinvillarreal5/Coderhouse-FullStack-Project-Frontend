@@ -10,7 +10,7 @@ const productSchema = new Schema({
     description: { type: String, required: true },
     code: { type: String, required: true },
     timestamp: { type: String, required: true },
-})
+});
 /*
 productSchema.set('toJSON',{
     transform: (document, returnedObject) => {
@@ -19,10 +19,8 @@ productSchema.set('toJSON',{
     }
 }) */
 
-class ProductDaoMongo extends MongoContainer {
+export default class ProductDaoMongo extends MongoContainer {
     constructor() {
         super('Product', productSchema);
     }
-}
-
-export default ProductDaoMongo;
+};

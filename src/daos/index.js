@@ -4,25 +4,27 @@ dotenv.config();
 let ProductDao;
 let CartDao;
 
-const testDB = "mongo"
 try {
-  switch (process.env.DATABASE || testDB) {
+  switch (process.env.DATABASE) {
     case "mongo":
       console.log("mongodb selected in daos index");
       const { default: ProductDaoMongo } = await import(
         "./products/productDaoMongo.js"
       );
-      /* const { default: CartDaoMongo } = await import(
+      const { default: CartDaoMongo } = await import(
         "./carts/cartDaoMongo.js"
-      ); */
+      );
 
       ProductDao = new ProductDaoMongo;
-      /* CartDao = CartDaoMongo; */
+      CartDao = new CartDaoMongo;
 
       break;
+    default:
+        throw "No database especified in the env file";
+      ;
   }
 } catch (error) {
   console.log('Error in Dao index: ' + error)
 }
 
-export { ProductDao/* , CartDao  */ };
+export { ProductDao, CartDao };

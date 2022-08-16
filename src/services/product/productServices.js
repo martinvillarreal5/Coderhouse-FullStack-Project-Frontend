@@ -5,7 +5,7 @@ import { ProductDao } from '../../daos/index.js';
 const getProductById = async (id) => {
     try {
         const product = await ProductDao.getById(id);
-        if (!product) throw 'producto no encontrado';
+        //if (!product) throw 'producto no encontrado';
         return product;
     } catch (error) {
         console.log('Error: ', error);

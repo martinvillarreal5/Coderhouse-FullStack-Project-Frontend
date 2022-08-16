@@ -3,8 +3,14 @@ import productServices from '../services/product/ProductServices.js';
 const getProductById = async /* ver si hace falta poner estos asyncs, ya que el container o service ya lo tiene*/(req, res) => {
     try {
         const id = req.params.id;
+        if (!id) return res.status(400).json({error: "No id found inside request params"}); //agregar validaciones similares en otros metodos,
+            //estas validaciones van en esta capa?
         const product = await productServices.getProductById(id);
-        res.status(200).json(product);
+        product ?
+            res.status(200).json(product)
+            : response.status(404).end()
+                // response.status(404).json("No product with matching id found")
+            ;
     } catch (err) {
         res.status(500).json({ error: err });
     }
@@ -12,14 +18,16 @@ const getProductById = async /* ver si hace falta poner estos asyncs, ya que el 
 const getProducts = async (req, res) => {
     try {
         const products = await productServices.getProducts()
-        res.json(products);
+        products ?
+            res.json(products)
+            : response.status(404).end();
     } catch (err) {
         res.status(500).json({ error: err });
     }
 }
 const saveProduct = async (req, res) => {
     try {
-        const product = {...req.body};
+        const product = { ...req.body };
         const savedProductId = await productServices.saveProduct(product)
         res.status(201).json('Saved product id: ' + savedProductId);
     } catch (err) {
@@ -45,15 +53,16 @@ const deleteProduct = async (req, res) => {
         const id = req.params.id;
         const deletedProduct = await productServices.deleteProduct(id);
         res.status(200).json('Product deleted: ' + deletedProduct);
+        //   response.status(204).end() // también podría ser, 204 no content
     } catch (err) {
         res.status(500).json({ error: err });
     }
 }
 
-export { 
+export {
     getProducts,
-    getProductById, 
-    saveProduct, 
-    updateProduct, 
-    deleteProduct 
+    getProductById,
+    saveProduct,
+    updateProduct,
+    deleteProduct
 };

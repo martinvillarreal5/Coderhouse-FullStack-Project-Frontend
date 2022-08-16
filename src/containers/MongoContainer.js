@@ -26,7 +26,9 @@ class MongoContainer {
 
     async getAll() {
         try {
-            return await this.model.find({});
+            const array = await this.model.find({})
+            // find returns a empty array if didnt found a doc
+            return array ? array : null;
         } catch (err) {
             console.log('Error in getAll Method: ', err);
         }
@@ -34,6 +36,7 @@ class MongoContainer {
 
     async save(object) {
         try {
+            console.log(object)
             object.timestamp = Date.now(); //aqui?
             const newObject = new this.model(object);
             const savedObject = await newObject.save();
@@ -44,12 +47,13 @@ class MongoContainer {
     }
 
     async updateById(id, data) {
+        //cambiar metodo en cartDao, o hacer que no tenga efecto en el mismo
         try {
             const updatedObject = await this.model.findByIdAndUpdate(
                 id,
                 //{runValidators: true}, parece que tiene limitaciones essta validacion, luego cambiar a un find y luego un save con validacion entre medio
                 {
-                    $set: data,
+                    $set: data, //validar data para que no sobreEscriba campos que no deben cambiarse? (como _id, timestamp, etc )
                 },
                 { new: true } // sin esto, la funcion devuelve el objeto anterior a la modificacion
             );
