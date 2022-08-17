@@ -36,6 +36,19 @@ const cartSchema = new Schema({
     //user id?
 });
 
+cartSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        returnedObject.products.forEach(
+            (product)=>{
+                delete product._id; //check if this works or if its bad practise
+            }
+        )
+        delete returnedObject._id
+        delete returnedObject.__v
+    }
+})
+
 class CartDaoMongo extends MongoContainer {
     constructor() {
         super('Cart', cartSchema);

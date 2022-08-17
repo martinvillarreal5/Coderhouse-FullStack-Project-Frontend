@@ -11,13 +11,14 @@ const productSchema = new Schema({
     code: { type: String, required: true },
     timestamp: { type: String, required: true },
 });
-/*
-productSchema.set('toJSON',{
+
+productSchema.set('toJSON', {
     transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id;
-        delete returnedObject._id; 
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
     }
-}) */
+})
 
 export default class ProductDaoMongo extends MongoContainer {
     constructor() {
