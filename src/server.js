@@ -1,37 +1,36 @@
 
 import 'dotenv/config'
-import path from 'path';
-const port = process.env.PORT || 8080;
-
+//import path from 'path'
 import express, { json, urlencoded } from 'express';
-const app = express();
 import routes from './routes/index.js';
+import middlewares from './utils/middlewares.js';
 
-// post url encode
+const app = express();
+
+
+// post url encode middleware
 app.use(json());
 app.use(urlencoded({ extended: true }));
 //app.use('/', express.static(path.join(__dirname + '../public')));
 
+// Request Logger Middleware
+app.use(middlewares.requestLogger);
+
 // Routes
 app.use('/', routes);
 
-/* not found */
-app.use((req, res) => {
-    res.status(404).json({error: -2, descripcion: `Ruta '${req.path}' Método '${req.method}' - No Implementada`});
-})
+// not found Middleware
+app.use(middlewares.unknownEndpoint);
 
 // error handler
-app.use(function (err, req, res, next) {
-    res.status(500).json({
-        error: err.message,
-    });
-});
+app.use(middlewares.errorHandler);
 
 // start server
-app.listen(port, (err) => {
-    if (!err) {
+const port = process.env.PORT || 8080;
+app.listen(port, (error) => {
+    if (!error) {
         console.log(`El servidor se inicio en el puerto ${port}`);
     } else {
-        console.log(`Hubo un error al iniciar el servidor: `, err);
+        console.log(`Hubo un error al iniciar el servidor: `, error);
     }
 });
