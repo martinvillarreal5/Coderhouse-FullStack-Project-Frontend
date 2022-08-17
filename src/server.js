@@ -2,11 +2,14 @@
 import 'dotenv/config'
 //import path from 'path'
 import express, { json, urlencoded } from 'express';
+import cors from 'cors'
 import routes from './routes/index.js';
 import middlewares from './utils/middlewares.js';
 
 const app = express();
 
+// cors middleware
+app.use(cors())
 
 // post url encode middleware
 app.use(json());
