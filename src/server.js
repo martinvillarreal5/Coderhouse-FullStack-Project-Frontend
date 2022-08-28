@@ -5,6 +5,7 @@ import express, { json, urlencoded } from 'express';
 import cors from 'cors'
 import routes from './routes/index.js';
 import middlewares from './utils/middlewares.js';
+import errorMiddleware from './utils/errorMiddleware.js';
 
 const app = express();
 
@@ -26,9 +27,10 @@ app.use('/', routes);
 app.use(middlewares.unknownEndpoint);
 
 // error handler
-app.use(middlewares.errorHandler);
+app.use(errorMiddleware);
 
 // start server
+//separate to diferent file: app and server are diferent
 const port = process.env.PORT || 8080;
 app.listen(port, (error) => {
     if (!error) {
