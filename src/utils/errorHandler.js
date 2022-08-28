@@ -72,5 +72,5 @@ class AppError extends Error {
   }
 }
 
-export default errorHandler;
+export {errorHandler, AppError};
 

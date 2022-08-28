@@ -1,5 +1,5 @@
 import logger from './logger.js';
-import errorHandler from './errorHandler.js';
+import {errorHandler} from './errorHandler.js';
 
 const handleRouteErrors = (error, request, response, next) => { // Not implented
     logger.error(error.message);
