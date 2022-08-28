@@ -1,60 +1,65 @@
 import cartServices from '../services/cart/CartServices.js';
 
-const getCartById = async /* ver si hace falta poner estos asyncs, ya que el container o service ya lo tiene*/(req, res) => {
+// busacr diferencias entre usar la funcion como esta ahora (async con un bloque trycatch adentro) 
+// o llamar los metodos comos promesas y usar .catch
+
+//asi mismo puede que el uso de asyncs aca este de mas, ya esta funcion devolveria una promesa, pero no tiene mucho sentido que lo haga
+// pasaria lo mismo en services, quizas lo mejor seria que cada capa devuelva la promesa en si del mongoose y finalmente usar un .catch aca, sino
+// hacer que cada cada retorne el error
+const getCartById = async (next, request, response) => {
     try {
-        const id = req.params.id;
+        const id = request.params.id;
         const cart = await cartServices.getCartById(id);
-        res.status(200).json(cart);
-    } catch (err) {
-        res.status(500).json({ error: err });
+        cart ? response.status(200).json(cart)
+            : response.status(404).end();
+    } catch (error) {
+        next(error);
     }
 }
-const getCarts = async (req, res) => {
+const getCarts = async (next, request, response) => {
     try {
         const carts = await cartServices.getCarts()
-        res.json(carts);
-    } catch (err) {
-        res.status(500).json({ error: err });
+        response.satus(200).json(carts);
+    } catch (error) {
+        next(error);
     }
 }
-const saveCart = async (req, res) => {
+const saveCart = async (next, request, response) => {
     try {
-        const cart = {...req.body};
+        const cart = { ...request.body };
         const savedCartId = await cartServices.saveCart(cart)
-        res.status(201).json('Saved cart id: ' + savedCartId);
-    } catch (err) {
-        res.status(500).json({ error: err });
+        response.status(201).json('Saved cart id: ' + savedCartId);
+    } catch (error) {
+        next(error);
     }
 }
 
-const updateCart = async (req, res) => {
+const updateCart = async (next, request, response) => {
     try {
-        const id = req.params.id;
-        console.log(id)
-        const data = req.body
-        console.log(data)
+        const id = request.params.id;
+        const data = request.body
         const updatedCartId = await cartServices.updateCart(id, data);
-        res.status(200).json('Updated cart id: ' + updatedCartId);
-    } catch (err) {
-        res.status(500).json({ error: err });
+        response.status(200).json('Updated cart id: ' + updatedCartId);
+    } catch (error) {
+        next(error);
     }
 }
 
-const deleteCart = async (req, res) => {
+const deleteCart = async (next, request, response) => {
     try {
-        const id = req.params.id;
+        const id = request.params.id;
         const deletedCart = await cartServices.deleteCart(id);
-        res.status(200).json('Cart deleted: ' + deletedCart);
-    } catch (err) {
-        res.status(500).json({ error: err });
+        response.status(200).json('Cart deleted: ' + deletedCart);
+    } catch (error) {
+        next(error);
     }
 }
 
-export { 
+export {
     getCarts,
-    getCartById, 
-    saveCart, 
-    updateCart, 
-    deleteCart 
+    getCartById,
+    saveCart,
+    updateCart,
+    deleteCart
 };
 
