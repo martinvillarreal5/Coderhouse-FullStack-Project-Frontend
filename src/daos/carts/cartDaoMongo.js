@@ -26,21 +26,22 @@ let itemSchema = new Schema(
     } */
 );
 
-const cartSchema = new Schema({
-
-    products: {
-        type: [itemSchema],
-        default: undefined
-    },
-    timestamp: { type: String, required: true },
-    //user id?
-});
+const cartSchema = new Schema(
+    {
+        products: {
+            type: [itemSchema],
+            default: undefined
+        },
+        //user id?
+    }, 
+    { timestamps: true }
+);
 
 cartSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
         returnedObject.products.forEach(
-            (product)=>{
+            (product) => {
                 delete product._id; //check if this works or if its bad practise
             }
         )

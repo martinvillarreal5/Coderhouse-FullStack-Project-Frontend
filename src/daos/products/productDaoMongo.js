@@ -2,15 +2,19 @@ import MongoContainer from "../../containers/MongoContainer.js";
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const productSchema = new Schema({
-    title: { type: String, required: true },
-    price: { type: Number, required: true },
-    thumbnail: { type: String, required: true },
-    stock: { type: Number, required: true },
-    description: { type: String, required: true },
-    code: { type: String, required: true },
-    timestamp: { type: String, required: true },
-});
+// mover todo lo referido a schema a una carpeta aparte
+
+const productSchema = new Schema(
+    {
+        title: { type: String, required: true },
+        price: { type: Number, required: true },
+        thumbnail: { type: String, required: true },
+        stock: { type: Number, required: true },
+        description: { type: String, required: true },
+        code: { type: String, required: true },
+    },
+    { timestamps: true }
+);
 
 productSchema.set('toJSON', {
     transform: (document, returnedObject) => {
