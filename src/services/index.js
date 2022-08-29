@@ -1,4 +1,4 @@
-import productServices from './product/productServices'
-import cartServices from './cart/cartServices'
+import productServices from './product/productServices.js'
+import cartServices from './cart/cartServices.js'
 
-export default {productServices, productServices};
+export {productServices, cartServices};

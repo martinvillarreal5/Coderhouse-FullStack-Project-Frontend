@@ -6,9 +6,9 @@
   "main": "./dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/server.js",
-    "build": "webpack ./src/server.js --mode=production",
-    "build:dev": "webpack ./src/server.js -w --mode=development"
+    "start": "nodemon ./src/index.js",
+    "build": "webpack ./src/index.js --mode=production",
+    "build:dev": "webpack ./src/index.js -w --mode=development"
   },
   "author": "",
   "license": "ISC",
