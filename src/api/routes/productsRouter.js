@@ -1,8 +1,16 @@
 import { Router } from 'express';
+
 const router = Router();
 
-import { getProducts, getProductById, saveProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
-import checkAuth from '../utils/checkAuth.js';
+import {
+    getProducts,
+    getProductById,
+    saveProduct,
+    updateProduct,
+    deleteProduct
+} from '../controllers/productController.js';
+
+import checkAuth from '../../utils/checkAuth.js';
 
 const admin = true;
 const checkAdmin = checkAuth(admin)

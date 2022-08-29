@@ -1,7 +1,13 @@
 import { Router } from 'express';
 const router = Router();
 
-import {getCartById, getCarts, saveCart, updateCart, deleteCart} from '../controllers/cartController.js';
+import {
+    getCartById,
+    getCarts,
+    saveCart,
+    updateCart,
+    deleteCart
+} from '../controllers/cartController.js';
 
 
 router.get('/', getCarts);

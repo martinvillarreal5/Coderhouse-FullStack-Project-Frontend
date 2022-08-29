@@ -1,4 +1,5 @@
-import productServices from '../services/product/ProductServices.js';
+import {productServices} from '../../services/index.js';
+import logger from '../../utils/logger.js';
 
 const getProductById = (request, response, next,) => {
     const id = request.params.id;/* 
@@ -34,13 +35,14 @@ const updateProduct = async (request, response, next) => {
         const id = request.params.id;
         const data = request.body
         const newNoteInfo = {
-            title: data.title,
-            price: data.price,
-            stock: data.stock,
-            description: data.description,
-            code: data.code,
-        };
-        const updatedProductId = await productServices.updateProduct(id, newNoteInfo);
+            ...title && data.title,
+            ...price && data.price,
+            ...stock && data.stock,
+            ...description && data.description,
+            ...code && data.code,
+        }; // testing hacer esto en service mejor
+        logger.info(newNoteInfo)
+        const updatedProductId = await productServices.updateProduct(id, data);
         response.status(200).json('Updated product id: ' + updatedProductId);
     } catch (error) {
         next(error);

@@ -1,5 +1,5 @@
 
-import { ProductDao } from '../../daos/index.js';
+import { ProductDao } from '../../data-access/daos/index.js';
 
 
 const getProductById = async (id) => {

@@ -1,17 +1,17 @@
 
-/*const checkAuth = (req, res, next) => {
-    if (req.body.administrador) {
+/*const checkAuth = (request, response, next) => {
+    if (request.body.administrador) {
         next();
     } else {
-        res.status(403).send({ error: -1, descripcion: `Ruta ${req.url} y/o metodo ${req.method} no autorizados`});
+        response.status(403).send({ error: -1, descripcion: `Ruta ${request.url} y/o metodo ${request.method} no autorizados`});
     }
 }*/
 const checkAuth = (admin)=>{
-    return ((req,res,next)=>{
+    return ((request,response,next)=>{
         if (admin === true){
             next();
         } else{
-            res.json({error: -1, descripcion: `Ruta '${req.route.path}' Método '${req.route.stack[0].method}' - No Autorizada`})
+            response.json({error: -1, descripcion: `Ruta '${request.route.path}' Método '${request.route.stack[0].method}' - No Autorizada`})
         }
     })
 }

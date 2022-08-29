@@ -1,4 +1,4 @@
-import { CartDao } from '../../daos/index.js';
+import { CartDao } from '../../data-access/daos/index.js';
 
 const getCartById = async (id) => {
         const cart = await CartDao.getById(id);

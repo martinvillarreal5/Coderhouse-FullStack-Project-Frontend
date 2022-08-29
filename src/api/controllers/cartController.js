@@ -1,4 +1,4 @@
-import cartServices from '../services/cart/CartServices.js';
+import {cartServices} from '../../services/index.js';
 
 // busacr diferencias entre usar la funcion como esta ahora (async con un bloque trycatch adentro) 
 // o llamar los metodos comos promesas y usar .catch
