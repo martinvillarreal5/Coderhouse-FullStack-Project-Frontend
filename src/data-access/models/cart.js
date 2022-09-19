@@ -1,14 +1,11 @@
-import MongoContainer from "../../containers/MongoContainer.js";
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-
 let itemSchema = new Schema(
     {
-        productId: {/* 
-        type: Schema.Types.ObjectId,
-        ref: "Product", */
-            type: String,
+        productId: {
+            type: Schema.Types.ObjectId,
+            ref: "Product",
             required: true,
         },
         quantity: {
@@ -16,14 +13,18 @@ let itemSchema = new Schema(
             required: true,
             min: [1, "Quantity can not be less then 1."],
         },
-        price: { //agregar alguna validacion a la hora de "comprar" el carrito? para que los precios de la base de datos y los de el carro concuerden
+        price: { 
+            //agregar alguna validacion a la hora de "comprar" el carrito? para que los precios de la base de datos y los de el carro concuerden
+            // o ver como hacer para mongoose directamente tome el valor de la base de datos? usando algun ref
             type: Number,
             required: true,
-        },
-    },/*
+        }
+    },
+    /*
     {
       timestamps: true, // implementar timestamp cada que vez que se modifique un producto (cantidad, nuevo)
-    } */
+    } 
+    */
 );
 
 const cartSchema = new Schema(
@@ -32,8 +33,12 @@ const cartSchema = new Schema(
             type: [itemSchema],
             default: undefined
         },
-        //user id?
-    }, 
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        }
+    },
     { timestamps: true }
 );
 
@@ -42,6 +47,7 @@ cartSchema.set('toJSON', {
         returnedObject.id = returnedObject._id.toString()
         returnedObject.products.forEach(
             (product) => {
+                product.id = product._id
                 delete product._id; //check if this works or if its bad practise
             }
         )
@@ -50,22 +56,4 @@ cartSchema.set('toJSON', {
     }
 })
 
-class CartDaoMongo extends MongoContainer {
-    constructor() {
-        super('Cart', cartSchema);
-    };
-
-    addProduct = async (cartId, product) => {
-        try {
-            const cart = await this.getById(cartId)
-            if (!cart) {
-                throw "CartId doesnt match any cart en in database"
-            }
-
-        } catch (error) {
-
-        }
-    };
-};
-
-export default CartDaoMongo;
+export default mongoose.model('Cart', cartSchema)

@@ -1,20 +1,20 @@
-import { CartDao } from '../../data-access/daos/index.js';
+import CartRepository from '../data-access/repositories/cart.js';
 
 const getCartById = async (id) => {
-        const cart = await CartDao.getById(id);
+        const cart = await CartRepository.getById(id);
         //if (!cart) throw 'Cart not found'; //va en esta capa
         return cart;
 }
 
 const getCarts = async () => {
-        return await CartDao.getAll();
+        return await CartRepository.getAll();
         console.log('Error: ', error);
 }
 const saveCart = async (data) => {
         console.log(data)
         const cart = data;
-        const savedCartId = CartDao.save(cart);
-        return savedCartId; 
+        const savedCart = CartRepository.save(cart);
+        return savedCart; 
 }
 
 const updateCart = async (id, data) => {
@@ -22,7 +22,7 @@ const updateCart = async (id, data) => {
             throw new Error('update Cart Data is empty or undefined')
             //esto va en el controller?
         }
-        const updatedCartId = await CartDao.updateById(id, data);/* 
+        const updatedCartId = await CartRepository.updateById(id, data);/* 
         if (id != updatedCartId){
             throw new Error('updatedCartId and given Id dont match, error')
             //no creo que haga falta esto, mas que nada testing
@@ -31,7 +31,7 @@ const updateCart = async (id, data) => {
 }
 
 const deleteCart = async (id) => {
-        const deletedCart = await CartDao.deleteById(id);
+        const deletedCart = await CartRepository.deleteById(id);
         return deletedCart;
 }
 

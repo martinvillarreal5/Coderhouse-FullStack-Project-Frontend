@@ -1,26 +1,26 @@
 
-import { ProductDao } from '../../data-access/daos/index.js';
+import ProductRepository from '../data-access/repositories/product.js';
 
 
 const getProductById = async (id) => {
-        return ProductDao.getById(id);
+        return ProductRepository.getById(id);
 }
 const getProducts = async () => {
-        const products = await ProductDao.getAll();
+        const products = await ProductRepository.getAll();
         return products
 }
 const saveProduct = async (data) => {
         const product = data;
         //validar cada dato de arriba ? o hacer eso en la squema de moongose
-        const savedProductId = ProductDao.save(product);
-        return savedProductId; //return saved product id
+        const savedProduct = ProductRepository.save(product);
+        return savedProduct; 
 }
 
 const updateProduct = async (id, data) => {
         if (!data){
             throw new Error('update product Data is empty or undefined')
         }
-        const updatedProductId = await ProductDao.updateById(id, data);/* 
+        const updatedProductId = await ProductRepository.updateById(id, data);/* 
         if (id != updatedProductId){
             throw new Error('updatedProductId and given Id dont match, error')
         } */
@@ -28,7 +28,7 @@ const updateProduct = async (id, data) => {
 }
 
 const deleteProduct = async (id) => {
-        const deletedProduct = await ProductDao.deleteById(id);
+        const deletedProduct = await ProductRepository.deleteById(id);
         return deletedProduct;
 }
 

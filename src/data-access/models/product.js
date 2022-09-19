@@ -1,8 +1,5 @@
-import MongoContainer from "../../containers/MongoContainer.js";
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
-
-// mover todo lo referido a schema a una carpeta aparte
 
 const productSchema = new Schema(
     {
@@ -24,8 +21,4 @@ productSchema.set('toJSON', {
     }
 })
 
-export default class ProductDaoMongo extends MongoContainer {
-    constructor() {
-        super('Product', productSchema);
-    }
-};
+export default mongoose.model('Product', productSchema)

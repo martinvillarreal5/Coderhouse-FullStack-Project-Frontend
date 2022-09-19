@@ -23,8 +23,16 @@ const getProducts = async (request, response, next,) => {
 }
 const saveProduct = async (request, response, next) => {
     try {
-        const savedProductId = await productServices.saveProduct(request.body)
-        response.status(201).json('Saved product id: ' + savedProductId);
+        const newNoteInfo = {
+            ...title && data.title,
+            ...price && data.price,
+            ...stock && data.stock,
+            ...description && data.description,
+            ...code && data.code,
+        }; // testing hacer esto en service mejor
+        logger.info(newNoteInfo)
+        const savedProduct = await productServices.saveProduct(request.body)
+        response.status(201).json('Saved product: ' + savedProduct);
     } catch (error) {
         next(error);
     }
@@ -34,14 +42,14 @@ const updateProduct = async (request, response, next) => {
     try {
         const id = request.params.id;
         const data = request.body
-        const newNoteInfo = {
+        /* const newNoteInfo = {
             ...title && data.title,
             ...price && data.price,
             ...stock && data.stock,
             ...description && data.description,
             ...code && data.code,
         }; // testing hacer esto en service mejor
-        logger.info(newNoteInfo)
+        logger.info(newNoteInfo) */
         const updatedProductId = await productServices.updateProduct(id, data);
         response.status(200).json('Updated product id: ' + updatedProductId);
     } catch (error) {

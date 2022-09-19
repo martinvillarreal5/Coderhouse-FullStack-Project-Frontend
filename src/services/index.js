@@ -1,4 +1,4 @@
-import productServices from './product/productServices.js'
-import cartServices from './cart/cartServices.js'
+import productServices from './productServices.js'
+import cartServices from './cartServices.js'
 
 export {productServices, cartServices};

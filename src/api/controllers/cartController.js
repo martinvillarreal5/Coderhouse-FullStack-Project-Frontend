@@ -27,8 +27,8 @@ const getCarts = async (next, request, response) => {
 const saveCart = async (next, request, response) => {
     try {
         const cart = { ...request.body };
-        const savedCartId = await cartServices.saveCart(cart)
-        response.status(201).json('Saved cart id: ' + savedCartId);
+        const savedCart = await cartServices.saveCart(cart)
+        response.status(201).json('Saved cart: ' + savedCart);
     } catch (error) {
         next(error);
     }
