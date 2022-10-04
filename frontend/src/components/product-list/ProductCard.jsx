@@ -1,6 +1,6 @@
-import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
-export default function ProductCard({productData}) {
-  const {title, prize, id} = productData
+import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
+export default function ProductCard({ productData }) {
+  const { title, price, id } = productData;
   return (
     <Card shadow="sm" p="lg" radius="md" mb="sm" withBorder>
       <Card.Section>
@@ -19,7 +19,7 @@ export default function ProductCard({productData}) {
       </Group>
 
       <Text size="md" color="dimmed">
-        ${prize}
+        ${price}
       </Text>
 
       <Button variant="light" color="blue" fullWidth mt="md" radius="md">

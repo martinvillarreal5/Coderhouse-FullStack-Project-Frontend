@@ -1,25 +1,24 @@
-import ProductList from "./ProductList.jsx"
+import ProductList from "./ProductList.jsx";
+//import { getAllProducts } from "../../lib/productLib.js";
 
-const products = [
-    {
-        id: 1,
-        title: "cosa1",
-        prize: 1,
-    },
-    {
-        id: 2,
-        title: "cosa2",
-        prize: 1,
-    }
-]
-function ProductListContainer() {
+import useProducts from "../../hooks/useProducts.js";
 
-    return (
-        <>
-          <ProductList products={products}></ProductList> 
-        </>
-    )
+export default function ProductListContainer() {
+  //const { data, error } = useSWR(baseServerUrl + "/products", fetcher);
+  const { products, isLoading, isError} = useProducts()
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    console.log(isError);
+    return <p>Error fetching products data</p>;
+  }
+
+  return (
+    <>
+      <ProductList products={products}></ProductList>
+    </>
+  );
 }
-
-
-export default ProductListContainer
