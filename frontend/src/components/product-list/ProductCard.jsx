@@ -1,6 +1,27 @@
 import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
-export default function ProductCard({ productData }) {
+import { addProductToCart } from "../../lib/cartLib";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+export default function ProductCard({ productData, isLogged }) {
   const { title, price, id } = productData;
+  //console.log(id);
+  const [waitingResponse, setWaitingResponse] = useState(false);
+
+  const handleAddToCart = async () => {
+    try {
+      setWaitingResponse(true);
+      const productData = { productId: id, quantity: 1 };
+      const responseMessage = await addProductToCart(productData);
+      console.log(responseMessage);
+      setWaitingResponse(false);
+    } catch (error) {
+      console.log(error);
+      setWaitingResponse(false);
+      // popup error alert
+    }
+  };
+
   return (
     <Card shadow="sm" p="lg" radius="md" mb="sm" withBorder>
       <Card.Section>
@@ -21,10 +42,28 @@ export default function ProductCard({ productData }) {
       <Text size="md" color="dimmed">
         ${price}
       </Text>
-
-      <Button variant="light" color="blue" fullWidth mt="md" radius="md">
-        Add to cart
-      </Button>
+      <Group position="apart" mt="md" radius="md">
+        <Button
+          // variant="filled"
+          color="green"
+          disabled={isLogged ? false : true}
+          loading={waitingResponse ? true : false}
+          onClick={() => handleAddToCart()}
+        >
+          Add to cart
+        </Button>
+        <Button
+          // variant="light"
+          component={Link}
+          to={`/products/${id}`}
+          color="blue"
+          disabled={isLogged ? false : true}
+          loading={waitingResponse ? true : false}
+          //onClick={() => handleAddToCart()}
+        >
+          Detail
+        </Button>
+      </Group>
     </Card>
   );
 }

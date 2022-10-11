@@ -1,11 +1,12 @@
 import ProductList from "./ProductList.jsx";
 //import { getAllProducts } from "../../lib/productLib.js";
 
-import useProducts from "../../hooks/useProducts.js";
+import useData from "../../hooks/useData.js";
+import useUser from "../../hooks/useUser.js";
 
 export default function ProductListContainer() {
-  //const { data, error } = useSWR(baseServerUrl + "/products", fetcher);
-  const { products, isLoading, isError} = useProducts()
+  const { data: products, isLoading, isError } = useData("/products");
+  const { loggedOut } = useUser();
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -18,7 +19,7 @@ export default function ProductListContainer() {
 
   return (
     <>
-      <ProductList products={products}></ProductList>
+      <ProductList products={products} isLogged={!loggedOut}></ProductList>
     </>
   );
 }
