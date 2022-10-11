@@ -1,9 +1,11 @@
-import logger from './utils/logger.js';
-import { AppError, errorHandler } from './utils/errorHandler.js';
-import { startWebServer } from './api/server.js';
+import logger from "./utils/logger.js";
+import { AppError, errorHandler } from "./api/utils/errorHandler.js";
+import { startWebServer } from "./api/server.js";
 
 async function start() {
-  // Array of entry point is being used to support more entry-points kinds like message queue, scheduled job,
+  // Array of entry point is being used to support more entry-points
+  // kinds like message queue, scheduled job, etc.
+  // TODO check use cases
   return Promise.all([startWebServer()]);
 }
 
@@ -13,6 +15,6 @@ start()
   })
   .catch((error) => {
     errorHandler.handleError(
-      new AppError('startup-failure', error.message, 500, false, error)
+      new AppError("startup-failure", error.message, 500, false, error)
     );
   });
