@@ -1,11 +1,9 @@
 import { Navbar, NavLink, Button } from "@mantine/core";
 import { useEffect } from "react";
-
-import { logOut } from "../../lib/authLib";
-
 import { Link } from "react-router-dom";
-
+import { logOut } from "../../lib/authLib";
 import useUser from "../../hooks/useUser";
+//import React, { memo } from "react";
 
 export default function NavBar(props) {
   const { opened } = props;
@@ -18,20 +16,22 @@ export default function NavBar(props) {
   }
   if (user) {
     profile = (
-      <NavLink label="Account">
-        <NavLink component={Link} to="/account/profile" label="Profile" />
-        <NavLink label="My Shopping Cart" />
-        <NavLink
-          //component={Button}
-          color="red"
-          sx={{ color: "red" }}
-          label="Log Out"
-          onClick={async () => {
-            await logOut();
-            mutate(null);
-          }}
-        />
-      </NavLink>
+      <>
+        <NavLink label="Account">
+          <NavLink component={Link} to="/account/profile" label="Profile" />
+          <NavLink component={Link} to="/account/cart" label="My Cart" />
+          <NavLink
+            //component={Button}
+            color="red"
+            sx={{ color: "red" }}
+            label="Log Out"
+            onClick={async () => {
+              await logOut();
+              mutate(null);
+            }}
+          />
+        </NavLink>
+      </>
     );
   }
   if (loggedOut) {
@@ -50,3 +50,5 @@ export default function NavBar(props) {
     </Navbar>
   );
 }
+
+//export default memo(NavBar);
