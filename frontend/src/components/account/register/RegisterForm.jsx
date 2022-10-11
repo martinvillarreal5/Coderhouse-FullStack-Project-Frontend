@@ -73,17 +73,6 @@ export default function RegisterForm() {
           </Text>
         ) : null}
         <form onSubmit={handleSubmit(handleSignUp)}>
-          {/* <TextInput
-            withAsterisk
-            label="Username"
-            pb="sm"
-            disabled={waitingResponse}
-            error={errors.username && errors.username?.message}
-            onFocus={() => setAuthError(false)}
-            placeholder="Your Username"
-            {...register("username")}
-            aria-invalid={errors.username ? "true" : "false"}
-          /> */}
           <TextInput
             withAsterisk
             label="Email"
@@ -132,14 +121,12 @@ export default function RegisterForm() {
           <Controller
             control={control}
             name="avatar"
-            //rules={{}}
             render={({ field: { onChange, value } }) => (
               <FileInput
                 withAsterisk
                 label="Avatar picture"
                 disabled={waitingResponse}
                 error={errors?.avatar && errors.avatar?.message}
-                //pb="sm"
                 placeholder="Upload your avatar"
                 onChange={(e) => {
                   onChange(e);
@@ -170,10 +157,8 @@ export default function RegisterForm() {
             <Controller
               control={control}
               name="phone"
-              //rules={{}}
               render={({ field: { onChange, value } }) => (
                 <PhoneInput
-                  //{...field}
                   placeholder="Enter phone number"
                   value={value}
                   defaultCountry="AR"
