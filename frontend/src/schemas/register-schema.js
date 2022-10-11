@@ -7,10 +7,10 @@ import {
 
 const registerSchema = z.object({
   email: z.string().min(1, { message: "Email is required" }).email(),
-  username: z.string().min(1, { message: "Username is required" }) /* 
+  /* username: z.string().min(1, { message: "Username is required" }) /* 
     .regex(new RegExp("^[a-zA-Z0-9]$"), {
       message: "Can't contain special characters",
-    }) */,
+    }) , */
   password: z
     .string()
     .min(1, { message: "Required" })
