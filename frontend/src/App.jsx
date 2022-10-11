@@ -17,6 +17,8 @@ import NavBar from "./components/navbar/NavBar.jsx";
 import UserDashboardContainer from "./components/account/profile/UserDashboardContainer.jsx";
 import LoginForm from "./components/account/login/LoginForm.jsx";
 import RegisterForm from "./components/account/register/RegisterForm.jsx";
+import CartContainer from "./components/account/cart/CartContainer.jsx";
+import ProductDetailContainer from "./components/product-detail/ProductDetailContainer.jsx";
 
 function App() {
   const theme = useMantineTheme();
@@ -33,7 +35,7 @@ function App() {
           },
         }}
         navbarOffsetBreakpoint="sm"
-        asideOffsetBreakpoint="sm"
+        asideOffsetBreakpoint="md"
         navbar={<NavBar opened={opened} />}
         header={
           <Header height={70} p="md">
@@ -68,17 +70,29 @@ function App() {
           </MediaQuery>
         }
       >
-        {/* Routes here */}
-        <Container size="lg">
-          <Routes>
+        <Container size="lg" /* Main page here */>
+          <Routes /* Routes here */>
             <Route path="/" element={<Text>Welcome</Text>} />
             <Route path="/products" element={<ProductListContainer />} />
+            <Route
+              path="/products/:productId"
+              element={<ProductDetailContainer />}
+            />
             <Route
               path="/account/profile"
               element={<UserDashboardContainer />}
             />
             <Route path="/account/login" element={<LoginForm />} />
             <Route path="/account/signup" element={<RegisterForm />} />
+            <Route path="/account/cart" element={<CartContainer />} />
+            <Route /* Non existent route */
+              path="*"
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>There's nothing here!</p>
+                </main>
+              }
+            />
           </Routes>
         </Container>
       </AppShell>
