@@ -8,11 +8,10 @@ import {
   Button,
   Input,
   Text,
-  Image,
   FileInput,
+  Avatar,
   TextInput,
 } from "@mantine/core";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 import useUser from "../../../hooks/useUser";
 import schema from "../../../schemas/register-schema";
@@ -41,26 +40,26 @@ export default function RegisterForm() {
   const [waitingResponse, setWaitingResponse] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [imgFile, setImgFile] = useState();
-  function handleChange(file) {
-    file ? setImgFile(URL.createObjectURL(file)) : setImgFile(null);
-  }
-
   /*   useEffect(() => {
     if (loggedOut === false) {
       navigate("/account/profile");
     }
   }, [loggedOut]); */
-  const onSubmit = async (data) => {
+
+  function handleChange(file) {
+    file ? setImgFile(URL.createObjectURL(file)) : setImgFile(null);
+  }
+  const handleSignUp = async (data) => {
     try {
       setWaitingResponse(true);
-      SignUp(data);
-      navigate("/account/login");
-      //if (authResponse.status)
+      const response = await SignUp(data);
     } catch (error) {
       setAuthError(true); //
       setWaitingResponse(false);
-      // console.log(error);
+      console.log(error);
+      return;
     }
+    navigate("/account/login");
   };
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -73,8 +72,8 @@ export default function RegisterForm() {
             Wrong Credentials
           </Text>
         ) : null}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextInput
+        <form onSubmit={handleSubmit(handleSignUp)}>
+          {/* <TextInput
             withAsterisk
             label="Username"
             pb="sm"
@@ -84,6 +83,17 @@ export default function RegisterForm() {
             placeholder="Your Username"
             {...register("username")}
             aria-invalid={errors.username ? "true" : "false"}
+          /> */}
+          <TextInput
+            withAsterisk
+            label="Email"
+            pb="sm"
+            disabled={waitingResponse}
+            error={errors.email && errors.email?.message}
+            onFocus={() => setAuthError(false)}
+            placeholder="Your Email"
+            {...register("email")}
+            aria-invalid={errors.email ? "true" : "false"}
           />
           <TextInput
             withAsterisk
@@ -109,17 +119,6 @@ export default function RegisterForm() {
           />
           <TextInput
             withAsterisk
-            label="Email"
-            pb="sm"
-            disabled={waitingResponse}
-            error={errors.email && errors.email?.message}
-            onFocus={() => setAuthError(false)}
-            placeholder="Your Email"
-            {...register("email")}
-            aria-invalid={errors.email ? "true" : "false"}
-          />
-          <TextInput
-            withAsterisk
             label="Password"
             description="Password must include at least one uppercase letter, lowercase letter, number and special character"
             pb="sm"
@@ -140,7 +139,7 @@ export default function RegisterForm() {
                 label="Avatar picture"
                 disabled={waitingResponse}
                 error={errors?.avatar && errors.avatar?.message}
-                pb="sm"
+                //pb="sm"
                 placeholder="Upload your avatar"
                 onChange={(e) => {
                   onChange(e);
@@ -151,8 +150,19 @@ export default function RegisterForm() {
               />
             )}
           />
-          {imgFile ? <Image src={imgFile} pb="sm" /> : null}
+          {imgFile ? (
+            <>
+              <Text pb="1">Your selected image: </Text>
+              <Avatar
+                src={imgFile}
+                alt="my uploaded image"
+                size={150}
+                radius="xl"
+              />
+            </>
+          ) : null}
           <Input.Wrapper
+            pt="sm"
             pb="sm"
             disabled={waitingResponse}
             error={errors?.phone && <p role="alert">{errors.phone?.message}</p>}
