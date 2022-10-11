@@ -2,13 +2,15 @@ import UserRepository from "../data-access/repositories/user-repository.js";
 import bcrypt from "bcrypt";
 import logger from "../utils/logger.js";
 
-//Cambiar para que no devuelvan informacion delicada
 const getUserById = async (id) => {
   return UserRepository.getById(id);
 };
 
-const getByUsername = async (username) => {
+/* const getByUsername = async (username) => {
   return UserRepository.getByUsername(username);
+}; */
+const getByEmail = async (email) => {
+  return UserRepository.getOne({ email: email });
 };
 
 const getUsers = async () => {
@@ -18,47 +20,49 @@ const getUsers = async () => {
 
 const saveUser = async (data) => {
   const user = data;
-  //validar cada dato de arriba ? o hacer eso en la squema de moongose
+  //? validar cada dato de arriba ? o no hace falta ya que hace eso en la squema de moongose
   const savedUserId = UserRepository.save(user);
   return savedUserId; //return saved  id?
 };
 
-function hashPassword(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-}
-
 const registerUser = async (userData) => {
-  //configure multer to save the image to static and add the link as avatarUrl
-  const { username, password, email, firstName, lastName, phone } = userData;
+  const { password, email, firstName, lastName, phone, avatarUrl } = userData;
   const newUser = {
-    username: username,
+    //username: username,
     passwordHash: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
     email: email,
     firstName: firstName,
     lastName: lastName,
     phone: phone,
+    avatarUrl: avatarUrl,
+    isAdmin: false,
   };
   const createdUser = await UserRepository.save(newUser);
   logger.info(
-    `New User created: ${createdUser.username}, id: ${createdUser._id}`
+    `New Admin created: ${createdUser.firstName + createdUser.lastName}, id: ${
+      createdUser._id
+    }`
   );
-  return;
+  return createdUser;
 };
 
 const registerAdmin = async (userData) => {
-  const { username, password, email, firstName, lastName, phone } = userData;
+  const { password, email, firstName, lastName, phone, avatarUrl } = userData;
   const newUser = {
-    username: username,
-    passwordHash: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
+    //username: username,
     email: email,
+    passwordHash: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
     firstName: firstName,
     lastName: lastName,
     phone: phone,
+    avatarUrl: avatarUrl,
     isAdmin: true,
   };
   const createdUser = await UserRepository.save(newUser);
   logger.info(
-    `New Admin created: ${createdUser.username}, id: ${createdUser._id}`
+    `New Admin created: ${createdUser.firstName + createdUser.lastName}, id: ${
+      createdUser._id
+    }`
   );
   return;
 };
@@ -81,7 +85,8 @@ const deleteUser = async (id) => {
 export {
   getUsers,
   getUserById,
-  getByUsername,
+  //getByUsername,
+  getByEmail,
   saveUser,
   updateUser,
   deleteUser,
