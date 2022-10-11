@@ -46,7 +46,8 @@ const useUser = () => {
   );
 
   return {
-    user: data?.user,
+    user: data,
+    isLogged: data ? true : false,
     loggedOut: error && error.status === 401,
     isLoading: !error && !data,
     isError: error,
