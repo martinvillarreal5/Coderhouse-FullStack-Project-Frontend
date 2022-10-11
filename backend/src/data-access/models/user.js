@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  username: {
+  /* username: {
     type: String,
     required: true,
-  },
+  }, */
   passwordHash: {
     type: String,
     required: true,
@@ -29,8 +29,13 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  avatarUrl: {
+    type: String,
+    required: true,
+  },
   isAdmin: {
     type: Boolean,
+    required: true,
   },
   /* 
         cartId: {

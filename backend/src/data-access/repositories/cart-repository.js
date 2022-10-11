@@ -5,8 +5,9 @@ class CartRepository extends BaseRepository {
     constructor() {
         super(CartModel);
     }
-    async getCart(ownerId){
-        const cart = await this.model.findOne({ ownerId });
+    async getCart(param) {
+        //make this a base repository method
+        const cart = await this.model.findOne({ param }).exec();
         return cart // retorna una instancia del modelo, se puede usar cart.save directamente
     }
     async addProductToCart(productId) {
@@ -15,7 +16,7 @@ class CartRepository extends BaseRepository {
     async save(modelInstance) {
         //test
         const savedObject = await modelInstance.save();
-        savedObject;
+        return savedObject;
     }
 
 };
