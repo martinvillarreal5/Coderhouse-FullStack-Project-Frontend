@@ -3,3 +3,5 @@ tests
 old
 dist
 .env
+TODO
+backend/public/images/avatar/*
