@@ -6,8 +6,8 @@ const getCartById = async (id) => {
   //if (!cart) throw 'Cart not found'; // ? va en esta capa?
   return cart;
 };
-const getCart = async (param) => {
-  const cart = await CartRepository.getCart(param);
+const getCart = async (paramObject) => {
+  const cart = await CartRepository.getOne(paramObject);
   //if (!cart) throw 'Cart not found'; // ? va en esta capa?
   return cart;
 };
@@ -22,7 +22,7 @@ const addProductToCart = async (ownerId, productData) => {
   if (!existingProduct) {
     throw new Error("Product to add doesn't exist in the database"); // TODO improve
   }
-  const cart = await CartRepository.getCart(ownerId); //get database cart instance
+  const cart = await CartRepository.getOne({ ownerId: ownerId }); //get database cart instance
   //If cart already exists for user,
   if (cart) {
     const productIndex = cart.products.findIndex(

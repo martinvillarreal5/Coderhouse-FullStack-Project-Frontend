@@ -12,8 +12,9 @@ const getCartById = async (req, res, next) => {
 };
 const getCart = async (req, res, next) => {
   try {
-    const cart = await cartServices.getCart(req.user._id);
-    console.log(cart);
+    console.log(req.user._id);
+    const cart = await cartServices.getCart({ ownerId: req.user._id });
+    //console.log(cart);
     if (cart === null || cart.products.length < 1) {
       // null means the findOne query couldn't find a coincidence. i.e., the user doesnt have a cart yet
       // or has one but without products.
