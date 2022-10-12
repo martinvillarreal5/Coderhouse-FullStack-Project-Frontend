@@ -10,29 +10,27 @@ const transporter = createTransport({
   },
 });
 
-export const sendNewRegisterNotification = async (registerData) => {
+export const sendNewRegisterNotification = async (user) => {
   const mailOptions = {
     from: "Servidor Node.js",
     to: mailerConfig.email,
     subject: "Nuevo Registro de Usuario",
     html: `<h1 style="color: blue;">Nuevo Registro: </h1>
-    <p>${JSON.stringify(registerData)}<p/>
+    <h2>${user.firstName} ${user.lastName}. email: ${user.email}<h2/>
     `,
   };
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(info);
-  } catch (error) {
-    console.log(error);
-  }
+  const info = await transporter.sendMail(mailOptions);
+  console.log(info);
 };
 
 export const sendNewOrderMail = async (userData, productsList) => {
   const htmlArray = productsList.map(
     (product) =>
-      `<li>${product.title} - total: ${product.quantity * product * price} (${
-        product.quantity
-      } x ${product.price}) - id: ${product.productId}</li>`
+      `<li>Producto: ${product.title} - total: ${
+        product.quantity * product.price
+      } (${product.quantity} x ${product.price}) - id: ${
+        product.productId
+      }</li>`
   );
   const orderTotal = productsList.reduce((accumulator, product) => {
     return accumulator + product.price * product.quantity;
@@ -48,10 +46,6 @@ export const sendNewOrderMail = async (userData, productsList) => {
     <h2>Precio total del pedido: ${orderTotal}
     `,
   };
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(info);
-  } catch (error) {
-    console.log(error);
-  }
+  const info = await transporter.sendMail(mailOptions);
+  console.log(info);
 };
