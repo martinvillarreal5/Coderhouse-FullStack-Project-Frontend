@@ -3,6 +3,12 @@ import { baseServerUrl } from "../config/paths";
 
 export const addProductToCart = async (productData) => {
   axios.defaults.withCredentials = true;
-  const reponse = await axios.post(baseServerUrl + "/cart", productData);
-  return reponse.data;
+  const response = await axios.post(baseServerUrl + "/cart", productData);
+  return response.data;
+};
+
+export const sendNewOrder = async () => {
+  axios.defaults.withCredentials = true;
+  const response = await axios.post(baseServerUrl + "/cart/order");
+  return response.data;
 };
