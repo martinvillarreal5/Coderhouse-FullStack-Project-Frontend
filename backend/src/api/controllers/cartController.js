@@ -1,5 +1,6 @@
 import cartServices from "../../services/cartServices.js";
 import { sendNewOrderMail } from "../utils/mailer.js";
+import { sendNewOrderSMG, sendNewOrderWhatsapp } from "../utils/messager.js";
 
 const getCartById = async (req, res, next) => {
   try {
@@ -48,8 +49,12 @@ const addProductToCart = async (req, res, next) => {
   }
 };
 
-const generateBuyOrder = async (req, res, next) => {
+const createOrder = async (req, res, next) => {
   try {
+    const user = {
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+    };
     const cart = await cartServices.getCart(req.user._id);
     //console.log(cart);
     if (cart === null || cart.products.length < 1) {
@@ -57,7 +62,15 @@ const generateBuyOrder = async (req, res, next) => {
         .status(400)
         .json("The user does not have a cart with products");
     }
-    await sendNewOrderMail(); // ? move thes to service layer?
+    //For Admin
+    await sendNewOrderMail({ ...user, email: req.user.email }, cart.products); // ? move these to service layer?
+    await sendNewOrderWhatsapp(
+      { ...user, email: req.user.phone, email: req.user.email },
+      cart.products
+    );
+    // For User
+    await sendNewOrderSMG({ ...user, phone: req.user.phone });
+    res.status(201).json("Saved Order");
   } catch (error) {
     next(error);
   }
@@ -74,10 +87,10 @@ const deleteCart = async (req, res, next) => {
 };
 
 export {
+  createOrder,
   getCart,
   getCarts,
   getCartById,
   addProductToCart,
   deleteCart,
-  generateBuyOrder,
 };
