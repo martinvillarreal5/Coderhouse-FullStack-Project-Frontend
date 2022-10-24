@@ -3,13 +3,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import passport from "passport";
 import middleware from "./middleware/middlewares.js";
 import handleRouteErrors from "./middleware/errorMiddleware.js";
 import router from "./routes/index.js";
 import { serverConfig, databaseConfig } from "../config/index.js";
-import { getUserById } from "../services/userServices.js";
-import { loginStrategy } from "./controllers/userController.js";
+import initializePassport from "./utils/passport.js";
 //import { fileURLToPath } from 'url';
 //import path, { dirname } from 'path'
 
@@ -53,26 +51,7 @@ export default function initializeExpressApp() {
     })
   );
 
-  expressApp.use(passport.initialize());
-  expressApp.use(passport.session());
-
-  passport.serializeUser((user, done) => {
-    done(null, user._id);
-  });
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await getUserById(id);
-      if (user) {
-        return done(null, user); // return valid object if user exists in our database
-      } else {
-        return done(null, false); // return false if user doesn't exists
-      }
-    } catch (error) {
-      return done(error, false);
-    }
-  });
-
-  passport.use("login", loginStrategy);
+  initializePassport(expressApp);
 
   //expressApp.use(middleware.requestLogger);
   expressApp.get("/", (req, res) => {

@@ -2,7 +2,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import bcrypt from "bcrypt";
 import logger from "../../utils/logger.js";
-import * as userServices from "../../services/userServices.js";
+import { getByEmail, getUserById } from "../../services/userServices.js";
 import passport from "passport";
 
 function verifyPassword(plainPassword, hashedPassword) {
@@ -17,7 +17,7 @@ const localLoginStrategy = new LocalStrategy(
   },
   async (email, password, done) => {
     try {
-      const user = await userServices.getByEmail(email);
+      const user = await getByEmail(email);
       if (!user) {
         return done(null, false, { message: "Invalid Credentials." });
       }
