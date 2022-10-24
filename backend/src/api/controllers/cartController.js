@@ -13,8 +13,8 @@ const getCartById = async (req, res, next) => {
 };
 const getCart = async (req, res, next) => {
   try {
-    console.log(req.user._id);
-    const cart = await cartServices.getCart({ ownerId: req.user._id });
+    //console.log(req.user._id);
+    const cart = await cartServices.getCart({ email: req.user.email });
     //console.log(cart);
     if (cart === null || cart.products.length < 1) {
       // null means the findOne query couldn't find a coincidence. i.e., the user doesnt have a cart yet
@@ -41,9 +41,9 @@ const getCarts = async (req, res, next) => {
 };
 const addProductToCart = async (req, res, next) => {
   try {
-    const cart = await cartServices.addProductToCart(req.user._id, req.body);
+    const cart = await cartServices.addProductToCart(req.user.email, req.body);
     //res.status(201).json("Saved cart: " + cart);
-    res.status(201).json("Saved cart");
+    res.status(200).json("Saved cart");
   } catch (error) {
     next(error);
   }
@@ -55,7 +55,7 @@ const createOrder = async (req, res, next) => {
       firstName: req.user.firstName,
       lastName: req.user.lastName,
     };
-    const cart = await cartServices.getCart(req.user._id);
+    const cart = await cartServices.getCart({ email: req.user.email });
     //console.log(cart);
     if (cart === null || cart.products.length < 1) {
       return res
@@ -64,12 +64,12 @@ const createOrder = async (req, res, next) => {
     }
     //For Admin
     await sendNewOrderMail({ ...user, email: req.user.email }, cart.products); // ? move these to service layer?
-    await sendNewOrderWhatsapp(
+    /* await sendNewOrderWhatsapp(
       { ...user, email: req.user.phone, email: req.user.email },
       cart.products
-    );
+    ); */
     // For User
-    await sendNewOrderSMG({ ...user, phone: req.user.phone });
+    //await sendNewOrderSMG({ ...user, phone: req.user.phone });
     res.status(201).json("Saved Order");
   } catch (error) {
     next(error);

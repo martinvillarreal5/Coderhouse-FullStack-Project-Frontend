@@ -13,8 +13,8 @@ import { avatarUpload } from "../utils/multer.js";
 
 const router = Router();
 
-router.get("/", ensureAuth, getUserInfo);
-router.get("/list", ensureAuth, getUsersList);
+router.get("/", getUserInfo);
+router.get("/list", ensureAdminAuth, getUsersList);
 router.post("/login", passport.authenticate("login"), postLogin);
 router.post("/register", avatarUpload.single("avatar"), postRegister);
 router.post("/admin", ensureAdminAuth, postRegisterAdmin); // TODO test more

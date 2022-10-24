@@ -1,7 +1,6 @@
-import productServices from "../../services/productServices.js";
-import logger from "../../utils/logger.js";
+import * as productServices from "../../services/productServices.js";
 
-const getProductById = async (req, res, next) => {
+export const getProductById = async (req, res, next) => {
   try {
     const product = await productServices.getProductById(req.params.id);
     product ? res.status(200).json(product) : res.status(404).end();
@@ -9,7 +8,7 @@ const getProductById = async (req, res, next) => {
     next(error);
   }
 };
-const getProducts = async (req, res, next) => {
+export const getProducts = async (req, res, next) => {
   try {
     const products = await productServices.getProducts();
     res.status(200).json(products);
@@ -17,58 +16,41 @@ const getProducts = async (req, res, next) => {
     next(error);
   }
 };
-const saveProduct = async (req, res, next) => {
+export const createProduct = async (req, res, next) => {
   try {
-    /* const newNoteInfo = {
-      // ? Should i validate this even if it get valdiated in the ORM anyways
-      ...(title && data.title),
-      ...(price && data.price),
-      ...(stock && data.stock),
-      ...(description && data.description),
-      ...(code && data.code),
-    }; // TODO testing hacer esto en service mejor
-    logger.info(newNoteInfo); */
-    const savedProduct = await productServices.saveProduct(req.body);
-    res.status(201).json("Saved product: " + savedProduct);
+    if (!req.file) {
+      //TODO improve error handling here or in the multer.js
+      return res.status(500).json("Picture didn't upload");
+    }
+    req.body.pictureUrl = req.file.path;
+    const newProduct = await productServices.createProduct(req.body);
+    res.status(201).json("Saved product: " + newProduct);
   } catch (error) {
     next(error);
   }
 };
 
-const updateProduct = async (req, res, next) => {
+export const updateProduct = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const data = req.body;
-    /* const newNoteInfo = {
-            ...title && data.title,
-            ...price && data.price,
-            ...stock && data.stock,
-            ...description && data.description,
-            ...code && data.code,
-        }; // testing hacer esto en service mejor
-        logger.info(newNoteInfo) */
-    const updatedProductId = await productServices.updateProduct(id, data);
+    if (req.file) {
+      req.body.pictureUrl = req.file.path;
+    }
+    const updatedProductId = await productServices.updateProduct(
+      req.params.id,
+      req.body
+    );
     res.status(200).json("Updated product id: " + updatedProductId);
   } catch (error) {
     next(error);
   }
 };
 
-const deleteProduct = async (next, req, res) => {
+export const deleteProduct = async (next, req, res) => {
   try {
-    const id = req.params.id;
-    const deletedProduct = await productServices.deleteProduct(id);
-    res.status(200).json("Product deleted: " + deletedProduct);
-    //   res.status(204).end() // también podría ser, 204 no content
+    await productServices.deleteProduct(req.params.id);
+    res.status(200).json("Product deleted");
+    // ?  res.status(204).end() // también podría ser, 204 no content
   } catch (error) {
     next(error);
   }
-};
-
-export {
-  getProducts,
-  getProductById,
-  saveProduct,
-  updateProduct,
-  deleteProduct,
 };
