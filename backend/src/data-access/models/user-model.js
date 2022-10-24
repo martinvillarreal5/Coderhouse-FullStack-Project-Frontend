@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
-//import passportLocalMongoose from 'passport-local-mongoose';
-const { Schema } = mongoose;
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   /* username: {
     type: String,
     required: true,
@@ -13,7 +11,7 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
-    unique: true,
+    unique: true, // ? if this fail, will throw a duplicate key error, instead of a validation error
     required: true,
     lowercase: true,
   },
