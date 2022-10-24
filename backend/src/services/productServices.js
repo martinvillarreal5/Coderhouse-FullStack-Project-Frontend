@@ -1,41 +1,32 @@
+import ProductRepository from "../data-access/repositories/product-repository.js";
 
-import ProductRepository from '../data-access/repositories/product-repository.js';
+export const getProductById = async (id) => {
+  return ProductRepository.getById(id);
+};
 
-const getProductById = async (id) => {
-        if(!id){
-                const error = new Error();
-                error.status = 400;
-                error.message = "Id parameter must be send";
-                throw error;
-        } // Test, if works correctly add to all services methods? 
-        //or is the "malformated id" if in handlerouteerror enough?
-        return ProductRepository.getById(id);
-}
+export const getProducts = async () => {
+  const products = await ProductRepository.getAll();
+  return products;
+};
 
-const getProducts = async () => {
-        const products = await ProductRepository.getAll();
-        return products
-}
-const saveProduct = async (data) => {
-        const product = data;
-        const savedProduct = ProductRepository.save(product);
-        return savedProduct; 
-}
+export const createProduct = async (data) => {
+  const product = data;
+  const newProduct = ProductRepository.create(product);
+  return newProduct;
+};
 
-const updateProduct = async (id, data) => {
-        if (!data){
-            throw new Error('update product Data is empty or undefined')
-        }
-        const updatedProductId = await ProductRepository.updateById(id, data);/* 
-        if (id != updatedProductId){
-            throw new Error('updatedProductId and given Id dont match, error')
-        } */
-        return updatedProductId;
-}
+export const updateProduct = async (id, data) => {
+  const { price, title, category, stock, description, pictureUrl } = data;
+  console.log(data);
+  // validate object keys???
+  if (!data) {
+    throw new Error("update product Data is empty or undefined");
+  }
+  const updatedProductId = await ProductRepository.updateById(id, data);
+  return updatedProductId;
+};
 
-const deleteProduct = async (id) => {
-        const deletedProduct = await ProductRepository.deleteById(id);
-        return deletedProduct;
-}
-
-export default{ getProducts, getProductById, saveProduct, updateProduct, deleteProduct };
+export const deleteProduct = async (id) => {
+  const deletedProduct = await ProductRepository.deleteById(id);
+  return deletedProduct;
+};

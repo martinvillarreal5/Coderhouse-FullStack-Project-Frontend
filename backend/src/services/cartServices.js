@@ -3,7 +3,6 @@ import ProductRepository from "../data-access/repositories/product-repository.js
 
 const getCartById = async (id) => {
   const cart = await CartRepository.getById(id);
-  //if (!cart) throw 'Cart not found'; // ? va en esta capa?
   return cart;
 };
 const getCart = async (paramObject) => {
@@ -15,35 +14,37 @@ const getCart = async (paramObject) => {
 const getCarts = async () => {
   return await CartRepository.getAll();
 };
-const addProductToCart = async (ownerId, productData) => {
+const addProductToCart = async (email, productData) => {
+  console.log(productData);
   //Se crea un carrito cuando el cliente guarda un producto, si es que no existe ya el carrito
   const { productId, quantity } = productData; // TODO validate this
   const existingProduct = await ProductRepository.getById(productId);
-  if (!existingProduct) {
+  const cart = await CartRepository.getOne({ email: email }); //get database cart instance
+  /* if (!existingProduct) {
     throw new Error("Product to add doesn't exist in the database"); // TODO improve
-  }
-  const cart = await CartRepository.getOne({ ownerId: ownerId }); //get database cart instance
+  } */
   //If cart already exists for user,
   if (cart) {
-    const productIndex = cart.products.findIndex(
-      (product) => product.productId == productId
-    );
+    const productIndex = cart.products.findIndex((product) => {
+      console.log(product.productId);
+      return product.productId == productId;
+    });
+
+    console.log("Indice de producto: " + productIndex);
     if (productIndex > -1) {
       //product is already in cart
       let cartProduct = cart.products[productIndex];
-      if (quantity < 0 && cart.quantity + quantity <= 0) {
-        //if resulting quantity is 0 or less
-        // TODO check if its working
+      cartProduct.quantity += quantity;
+      if (cartProduct.quantity < 1) {
+        console.log("Removing product from cart");
         cart.products.splice(productIndex, 1);
-      } else {
-        cartProduct.quantity += quantity;
       }
-      //cartProduct.price = existingProduct.price; // ? updates price?
     } else if (quantity > 0) {
       //product is not in the cart and quantity is valid
       cart.products.push({
         productId: productId,
         quantity: quantity,
+        description: existingProduct.description,
         price: existingProduct.price,
         title: existingProduct.title,
       });
@@ -53,11 +54,12 @@ const addProductToCart = async (ownerId, productData) => {
   } else if (quantity > 0) {
     //Create new Cart
     const cartData = {
-      ownerId: ownerId,
+      email: email,
       products: [
         {
           productId: productId,
           quantity: quantity,
+          description: existingProduct.description,
           price: existingProduct.price,
           title: existingProduct.title,
         },

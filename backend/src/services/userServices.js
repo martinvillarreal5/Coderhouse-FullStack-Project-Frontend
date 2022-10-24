@@ -21,7 +21,7 @@ const getUsers = async () => {
 const saveUser = async (data) => {
   const user = data;
   //? validar cada dato de arriba ? o no hace falta ya que hace eso en la squema de moongose
-  const savedUserId = UserRepository.save(user);
+  const savedUserId = UserRepository.create(user);
   return savedUserId; //return saved  id?
 };
 
@@ -37,7 +37,7 @@ const registerUser = async (userData) => {
     avatarUrl: avatarUrl,
     isAdmin: false,
   };
-  const createdUser = await UserRepository.save(newUser);
+  const createdUser = await UserRepository.create(newUser);
   logger.info(
     `New Admin created: ${createdUser.firstName + createdUser.lastName}, id: ${
       createdUser._id
@@ -58,7 +58,7 @@ const registerAdmin = async (userData) => {
     avatarUrl: avatarUrl,
     isAdmin: true,
   };
-  const createdUser = await UserRepository.save(newUser);
+  const createdUser = await UserRepository.create(newUser);
   logger.info(
     `New Admin created: ${createdUser.firstName + createdUser.lastName}, id: ${
       createdUser._id

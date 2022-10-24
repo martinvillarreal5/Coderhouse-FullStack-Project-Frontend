@@ -17,16 +17,19 @@ class BaseRepository {
   async getById(id) {
     return await this.model.findById(id);
   }
+
   async getOne(paramsObject) {
     return await this.model.findOne(paramsObject).exec();
+    //? findOne returns null when no document satisfies the field in the filter
+    //! But if the specified field in the filter does not exist,
+    //! (for example because of a typo), MongoDB returns an arbitrary document.
+    //! This can cause some really bad bugs and security issues.
   }
 
   async getAll() {
-    //In user change this method to only return not sensible data,
-    // i think the toJSON transform already do that tho
-    const array = await this.model.find({});
-    // find returns a empty array if didnt found a doc?
-    return array;
+    return await this.model.find({});
+    // ? find returns a empty array if didnt found a doc
+    //! find method has the same problem as findOne above
   }
 
   async create(object) {
@@ -34,11 +37,9 @@ class BaseRepository {
     return newObject;
   }
 
-  async save(object) {
-    const newObject = new this.model(object);
-    //Usar este metodo solo para objetos ya instaciados? (aquellos que se obtiene desde un findOne, por ej)
-    //Para no tener que instanciarlos en este metodo
-    const savedObject = await newObject.save();
+  async save(modelInstance) {
+    //test
+    const savedObject = await modelInstance.save();
     return savedObject;
   }
 
