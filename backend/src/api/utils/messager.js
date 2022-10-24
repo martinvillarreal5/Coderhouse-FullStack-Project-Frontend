@@ -1,6 +1,5 @@
 import twilio from "twilio";
 import { twilioConfig } from "../../config/index.js";
-import product from "../../data-access/models/product.js";
 
 const accountSid = twilioConfig.accountSid;
 const authToken = twilioConfig.authToken;
@@ -25,8 +24,7 @@ export const sendNewOrderWhatsapp = async (user, products) => {
   const message = await client.messages.create({
     body: `Nuevo Pedido de ${user.firstName} ${user.lastName}, email:${
       user.email
-    }:
-     ${productsList.toString().split(",").join("")}`,
+    }:/n${productsList.toString().split(",").join("")}`,
     from: `whatsapp:${twilioConfig.twilioWhatsapp}`,
     to: `whatsapp:${twilioConfig.adminPhone}`,
   });

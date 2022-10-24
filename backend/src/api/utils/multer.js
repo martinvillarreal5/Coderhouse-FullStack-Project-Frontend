@@ -15,6 +15,20 @@ const avatarStorage = multer.diskStorage({
   },
 });
 
+const pictureStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/images/product-pictures");
+  },
+  filename: (req, file, cb) => {
+    //console.log(file);
+    const ext = file.mimetype.split("/")[1];
+    cb(
+      null,
+      `avatar_${req.body.title.toLowerCase()}_${req.body.category.toLowerCase()}_${Date.now()}.${ext}`
+    );
+  },
+});
+
 const avatarFilter = (req, file, cb) => {
   const ext = file.mimetype.split("/")[1];
   if (ext === "png" || ext === "jpeg" || ext === "jpg" || ext === "webp") {
@@ -33,4 +47,10 @@ const avatarUpload = multer({
   //fileFilter: avatarFilter,
 });
 
-export { avatarUpload };
+const pictureUpload = multer({
+  storage: pictureStorage,
+  //limits: { fileSize: 5000000 },
+  //fileFilter: avatarFilter,
+});
+
+export { avatarUpload, pictureUpload };

@@ -20,7 +20,7 @@ export const sendNewRegisterNotification = async (user) => {
     `,
   };
   const info = await transporter.sendMail(mailOptions);
-  console.log(info);
+  console.log(info); //logs new admin created...
 };
 
 export const sendNewOrderMail = async (userData, productsList) => {
