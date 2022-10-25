@@ -45,9 +45,10 @@ export const updateProduct = async (req, res, next) => {
   }
 };
 
-export const deleteProduct = async (next, req, res) => {
+export const deleteProduct = async (req, res, next) => {
   try {
-    await productServices.deleteProduct(req.params.id);
+    const id = req.params.id;
+    await productServices.deleteProduct(id);
     res.status(200).json("Product deleted");
     // ?  res.status(204).end() // también podría ser, 204 no content
   } catch (error) {
