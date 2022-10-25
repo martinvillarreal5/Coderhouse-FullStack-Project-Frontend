@@ -1,5 +1,6 @@
 import multer from "multer";
 //import { fileURLToPath } from 'url';
+import { getProductById } from "../../services/productServices.js";
 
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -19,12 +20,22 @@ const pictureStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/images/product-pictures");
   },
-  filename: (req, file, cb) => {
+  filename: async (req, file, cb) => {
     //console.log(file);
     const ext = file.mimetype.split("/")[1];
+    const product = await getProductById(req.params.id);
+    console.log(product);
+    if (!product) {
+      // TODO improve
+      const error = new Error("Product Not Found");
+      error.HTTPStatus = 404;
+      cb(error, null);
+    }
+    const title = req.body?.title || product.title;
+    const category = req.body?.category || product.category;
     cb(
       null,
-      `avatar_${req.body.title.toLowerCase()}_${req.body.category.toLowerCase()}_${Date.now()}.${ext}`
+      `avatar_${title.toLowerCase()}_${category.toLowerCase()}_${Date.now()}.${ext}`
     );
   },
 });
