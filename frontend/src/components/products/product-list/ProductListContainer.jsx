@@ -1,8 +1,12 @@
 import ProductList from "./ProductList.jsx";
-//import { getAllProducts } from "../../lib/productLib.js";
+import useData from "../../../hooks/useData.js";
+import useUser from "../../../hooks/useUser.js";
 
-import useData from "../../hooks/useData.js";
-import useUser from "../../hooks/useUser.js";
+//list container: tiene logica de fetch, consigue la info, y  se la manda al list
+//el list: recibe la info (el array), mapea la info y la muestra, y le manda cada indice a cada carta indiviual
+// card: muestra un cart con la info que recibe, link to "/detail/${id}"
+
+// /detail/:id
 
 export default function ProductListContainer() {
   const { data: products, isLoading, isError } = useData("/products");

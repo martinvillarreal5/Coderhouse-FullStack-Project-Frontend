@@ -1,18 +1,38 @@
-import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
-import { addProductToCart } from "../../lib/cartLib";
+import {
+  Card,
+  Image,
+  Text,
+  Badge,
+  Button,
+  Group,
+  createStyles,
+} from "@mantine/core";
+import { addProductToCart } from "../../../lib/cartLib";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { baseServerUrl } from "../../../config/paths";
+
+const useStyles = createStyles((theme) => ({
+  rating: {
+    position: "absolute",
+    top: theme.spacing.xs,
+    right: theme.spacing.xs + 2,
+    pointerEvents: "none",
+  },
+}));
 
 export default function ProductCard({ productData, isLogged }) {
-  const { title, price, id } = productData;
+  const { classes } = useStyles();
+
+  const { title, category, description, stock, price, id, pictureUrl } =
+    productData;
   //console.log(id);
   const [waitingResponse, setWaitingResponse] = useState(false);
 
   const handleAddToCart = async () => {
     try {
       setWaitingResponse(true);
-      const productData = { productId: id, quantity: 1 };
-      const responseMessage = await addProductToCart(productData);
+      const responseMessage = await addProductToCart(id, 1);
       console.log(responseMessage);
       setWaitingResponse(false);
     } catch (error) {
@@ -26,27 +46,39 @@ export default function ProductCard({ productData, isLogged }) {
     <Card shadow="sm" p="lg" radius="md" mb="sm" withBorder>
       <Card.Section>
         <Image
-          src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-          height={160}
+          src={baseServerUrl + "/" + pictureUrl}
+          fit="contain"
+          mt="sm"
+          height={200}
           alt="Norway"
         />
       </Card.Section>
 
-      <Group position="apart" mt="md" mb="xs">
-        <Text weight={500}>{title}</Text>
-        <Badge color="pink" variant="light">
-          On Sale
-        </Badge>
-      </Group>
+      <Badge
+        className={classes.rating}
+        {...(stock > 0 ? { color: "green" } : { color: "red" })}
+        variant="light"
+      >
+        {stock > 0 ? "Available" : "No stock"}
+      </Badge>
 
+      <Group position="apart" mt="md">
+        <Text size="xl" weight={500}>
+          {title}
+        </Text>
+      </Group>
       <Text size="md" color="dimmed">
+        {category}
+      </Text>
+      <Text size="lg" weight={500}>
         ${price}
       </Text>
+      <Text size="md">{description}</Text>
       <Group position="apart" mt="md" radius="md">
         <Button
           // variant="filled"
           color="green"
-          disabled={isLogged ? false : true}
+          disabled={stock < 1 ? true : isLogged ? false : true}
           loading={waitingResponse ? true : false}
           onClick={() => handleAddToCart()}
         >
@@ -57,7 +89,7 @@ export default function ProductCard({ productData, isLogged }) {
           component={Link}
           to={`/products/${id}`}
           color="blue"
-          disabled={isLogged ? false : true}
+          //disabled={isLogged ? false : true}
           loading={waitingResponse ? true : false}
           //onClick={() => handleAddToCart()}
         >
