@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function CartContainer() {
   const navigate = useNavigate();
-  const { cart, isError, isLoading, loggedOut } = useCart();
+  const { cart, isError, isLoading, loggedOut, mutate } = useCart();
 
   useEffect(() => {
     if (loggedOut) {
@@ -18,19 +18,20 @@ export default function CartContainer() {
     return <Text>Loading</Text>;
   }
 
-  if (!cart && loggedOut) {
+  if (loggedOut) {
     return <Text>Not logged in. Redirecting... </Text>;
   }
 
   if (isError) {
     if (isError.status === 204) {
-      return <Text>User doesn't have a cart with products yet</Text>;
+      return <Text>You don't have a cart with products yet. </Text>;
+      //TODO button link to products
     }
     return <Text>Error fetching the data</Text>;
   }
 
   if (cart && !loggedOut) {
     //console.log(cart);
-    return <Cart cartData={cart} />;
+    return <Cart cartData={cart} mutate={mutate} />;
   }
 }
