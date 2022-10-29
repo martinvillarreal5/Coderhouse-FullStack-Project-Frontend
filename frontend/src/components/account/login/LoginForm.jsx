@@ -11,16 +11,17 @@ export default function LoginForm() {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const { isLoading, loggedOut, mutate } = useUser();
+  const { isLoading, isLogged, loggedOut, mutate } = useUser();
   const [buttonLoading, setButtonLoading] = useState(false);
   const navigate = useNavigate();
   const [authError, setAuthError] = useState(false);
 
   useEffect(() => {
-    if (!loggedOut) {
+    if (isLogged) {
       navigate("/account/profile");
     }
-  }, [loggedOut]);
+  }, [isLogged]);
+
   const onSubmit = async (data) => {
     try {
       setButtonLoading(true);
@@ -44,6 +45,7 @@ export default function LoginForm() {
   if (loggedOut) {
     return (
       <>
+        <Text pb="sm">Log In</Text>
         {authError ? (
           <Text pb="sm" color="red">
             Wrong Credentials
