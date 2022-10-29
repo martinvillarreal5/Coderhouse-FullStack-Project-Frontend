@@ -12,13 +12,15 @@ import {
   Container,
 } from "@mantine/core";
 import { Route, Routes, Link } from "react-router-dom";
-import ProductListContainer from "./components/product-list/ProductListContainer.jsx";
+import ProductListContainer from "./components/products/product-list/ProductListContainer.jsx";
+import ProductDetailContainer from "./components/products/product-detail/ProductDetailContainer.jsx";
+import CreateProductFormContainer from "./components/products/product-form/CreateProductFormContainer.jsx";
+import UpdateProductFormContainer from "./components/products/product-form/UpdateProductFormContainer.jsx";
 import NavBar from "./components/navbar/NavBar.jsx";
 import UserDashboardContainer from "./components/account/profile/UserDashboardContainer.jsx";
 import LoginForm from "./components/account/login/LoginForm.jsx";
 import RegisterForm from "./components/account/register/RegisterForm.jsx";
 import CartContainer from "./components/account/cart/CartContainer.jsx";
-import ProductDetailContainer from "./components/product-detail/ProductDetailContainer.jsx";
 
 function App() {
   const theme = useMantineTheme();
@@ -70,13 +72,21 @@ function App() {
           </MediaQuery>
         }
       >
-        <Container size="lg" /* Main page here */>
+        <Container size="md" /* Main page here */>
           <Routes /* Routes here */>
             <Route path="/" element={<Text>Welcome</Text>} />
             <Route path="/products" element={<ProductListContainer />} />
             <Route
               path="/products/:productId"
               element={<ProductDetailContainer />}
+            />
+            <Route
+              path="/products/admin/create"
+              element={<CreateProductFormContainer />}
+            />
+            <Route
+              path="/products/admin/update/:productId"
+              element={<UpdateProductFormContainer />}
             />
             <Route
               path="/account/profile"
