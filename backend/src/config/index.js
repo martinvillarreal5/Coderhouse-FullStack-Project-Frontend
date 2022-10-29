@@ -2,7 +2,7 @@ import "dotenv/config";
 
 export const serverConfig = {
   port: process.env.PORT,
-  secret: process.env.SECRET || "mySecret",
+  secret: process.env.SECRET,
 };
 
 export const databaseConfig = {
@@ -17,10 +17,11 @@ export const mailerConfig = {
   password: process.env.MAILER_PASS,
 };
 
-export const twilioConfig = {
+/* export const twilioConfig = {
   accountSid: process.env.TWILIO_SID,
   authToken: process.env.TWILIO_AUTH_TOKEN,
   twilioPhone: process.env.TWILIO_PHONE,
   twilioWhatsapp: process.env.TWILIO_WHATSAPP,
   adminPhone: "+5492616964632",
 };
+ */
