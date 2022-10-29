@@ -5,3 +5,4 @@ dist
 .env
 TODO
 backend/public/images/avatar/*
+backend/public/images/product-pictures/*
