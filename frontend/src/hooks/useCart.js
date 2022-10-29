@@ -50,7 +50,7 @@ const useCart = () => {
   return {
     cart: data,
     loggedOut: error && error.status === 401,
-    nonCart: error && error.status === 204,
+    emptyCart: error && error.status === 204,
     isLoading: !error && !data,
     isError: error,
     mutate, //

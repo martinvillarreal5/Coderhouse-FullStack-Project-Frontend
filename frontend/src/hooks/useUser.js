@@ -5,19 +5,18 @@ axios.defaults.withCredentials = true;
 
 const fetcher = (url) =>
   axios
-    .get(url, {
+    .get(
+      url /* , {
       validateStatus: function (status) {
         return status < 500; // Resuelve solo si el código de estado es menor que 500
       },
-    })
+    } */
+    )
     .then((r) => {
-      if (r.status === 401) {
-        //Add a catch for other errors?
-        //console.log("Not Authorized");
-        const authError = new Error("Not Authorized");
-        authError.status = 401;
-        authError.info = r.data;
-        throw authError;
+      if (r.status === 204) {
+        const logInError = new Error("Not Logged In");
+        logInError.status = 204;
+        throw logInError;
       }
       return r.data;
     });
@@ -28,8 +27,9 @@ const useUser = () => {
     fetcher,
     {
       onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-        // Never retry on 404.
-        if (error.status === 404 || error.status === 401) return;
+        // Never retry on 204 or 400+ codes.
+        if (error.status === 204) return;
+        if (error.status >= 400) return;
 
         //TODO Handle server conection error
 
@@ -47,35 +47,13 @@ const useUser = () => {
 
   return {
     user: data,
-    isLogged: data ? true : false,
-    loggedOut: error && error.status === 401,
+    isAdmin: data?.isAdmin,
+    isLogged: data && !error ? true : false,
+    loggedOut: error && error.status === 204,
     isLoading: !error && !data,
     isError: error,
-    mutate, // use along a addProduct service. Example https://swr.vercel.app/examples/optimistic-ui
+    mutate, // check https://swr.vercel.app/examples/optimistic-ui
   };
 };
 
 export default useUser;
-
-/* 
-axios.interceptors.response.use(
-    response => {
-        return response;
-    },
-    error => {
-        if (
-            //isSameOrigin(error.response?.request?.responseURL) &&
-             error.response?.status === 401
-            //&& error.response?.data?.message !== 'Bad credentials.'
-        ) {
-            console.log("Intercepted Error 401")
-            const authError = new Error('Not Authorized')
-            authError.status = 401
-            authError.info = error.response
-            throw authError
-        }
-
-        return Promise.reject(error);
-    }
-);
- */
