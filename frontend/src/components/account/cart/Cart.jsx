@@ -1,7 +1,7 @@
 import { Button, Table, Text, ActionIcon, ThemeIcon } from "@mantine/core";
-import { sendNewOrder } from "../../../lib/cartLib";
+import { sendNewOrder } from "../../../lib/orderLib";
 import { IconTrash } from "@tabler/icons";
-import { addProductToCart } from "../../../lib/orderLib";
+import { addProductToCart } from "../../../lib/cartLib";
 
 //import { useEffect } from "react";
 
