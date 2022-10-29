@@ -4,5 +4,5 @@ old
 dist
 .env
 TODO
-backend/public/images/avatar/*
-backend/public/images/product-pictures/*
+public/images/avatar/*
+public/images/product-pictures/*
