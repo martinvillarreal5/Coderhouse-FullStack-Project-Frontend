@@ -49,7 +49,6 @@ const registerUser = async (userData) => {
 const registerAdmin = async (userData) => {
   const { password, email, firstName, lastName, phone, avatarUrl } = userData;
   const newUser = {
-    //username: username,
     email: email,
     passwordHash: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
     firstName: firstName,
@@ -58,12 +57,7 @@ const registerAdmin = async (userData) => {
     avatarUrl: avatarUrl,
     isAdmin: true,
   };
-  const createdUser = await UserRepository.create(newUser);
-  logger.info(
-    `New Admin created: ${createdUser.firstName + createdUser.lastName}, id: ${
-      createdUser._id
-    }`
-  );
+  await UserRepository.create(newUser);
   return;
 };
 
@@ -71,15 +65,12 @@ const updateUser = async (id, data) => {
   if (!data) {
     throw new Error("update user Data is empty or undefined");
   }
-  //Separar en diferentes servicios, para contraseña, correo y nombres
-  const updatedUserId = await UserRepository.updateById(id, data);
-  return updatedUserId;
+  //? Separar en diferentes servicios, para contraseña, correo y nombres
+  return await UserRepository.updateById(id, data); // ! Dont return sensible info
 };
 
 const deleteUser = async (id) => {
-  const deletedUser = await UserRepository.deleteById(id);
-  // que no devuelva info sensible
-  return deletedUser;
+  await UserRepository.deleteById(id);
 };
 
 export {

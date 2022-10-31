@@ -1,32 +1,39 @@
 import ProductRepository from "../data-access/repositories/product-repository.js";
 
 export const getProductById = async (id) => {
-  return ProductRepository.getById(id);
+  return await ProductRepository.getById(id);
 };
 
 export const getProducts = async () => {
-  const products = await ProductRepository.getAll();
-  return products;
+  return await ProductRepository.getAll();
 };
 
 export const createProduct = async (data) => {
-  const product = data;
-  const newProduct = ProductRepository.create(product);
-  return newProduct;
+  return await ProductRepository.create(data);
 };
 
 export const updateProduct = async (id, data) => {
-  const { price, title, category, stock, description, pictureUrl } = data;
-  console.log(data);
-  // validate object keys???
+  /*const allowedKeys = [price, title, category, stock, description, pictureUrl];
+   if (Object.keys(data).some((key) => !allowedKeys.includes(key))) {
+    //if object has non-allowed key:
+    throw new Error("Update product Data has invalid properties");
+  } */ //? one option
+
+  /* let updateData = {};
+  if (data?.price) updateData.price = data.price;
+  if (data?.title) updateData.title = data.title;
+  if (data?.category) updateData.category = data.category;
+  if (data?.stock) updateData.stock = data.stock;
+  if (data?.description) updateData.description = data.description;
+  if (data?.pictureUrl) updateData.pictureUrl = data.pictureUrl;
+  */ //? another option
+
   if (!data) {
-    throw new Error("update product Data is empty or undefined");
+    throw new Error("Update product Data is empty or undefined");
   }
-  const updatedProductId = await ProductRepository.updateById(id, data);
-  return updatedProductId;
+  return await ProductRepository.updateById(id, data);
 };
 
 export const deleteProduct = async (id) => {
-  const deletedProduct = await ProductRepository.deleteById(id);
-  return deletedProduct;
+  await ProductRepository.deleteById(id);
 };
