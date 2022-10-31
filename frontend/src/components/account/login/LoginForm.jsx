@@ -1,20 +1,25 @@
 import { useForm } from "react-hook-form";
-import { Button, Input, Text } from "@mantine/core";
+import { Button, TextInput, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import useUser from "../../../hooks/useUser";
 import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import schema from "../../../schemas/login-schema.js";
+import useUser from "../../../hooks/useUser";
 
 export default function LoginForm() {
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
-  const { isLoading, isLogged, loggedOut, mutate } = useUser();
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const navigate = useNavigate();
+  } = useForm({
+    resolver: zodResolver(schema),
+    criteriaMode: "all",
+  });
   const [authError, setAuthError] = useState(false);
+  const [waitingResponse, setWaitingResponse] = useState(false);
+  const { isLoading, isLogged, loggedOut, mutate } = useUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLogged) {
@@ -24,25 +29,37 @@ export default function LoginForm() {
 
   const onSubmit = async (data) => {
     try {
-      setButtonLoading(true);
+      setWaitingResponse(true);
       const authResponse = await axios.post(
         "http://localhost:8080/user/login",
         data
       );
       console.log(authResponse.data);
       mutate();
-
-      //if (authResponse.status)
     } catch (error) {
-      setAuthError(true); // Add a setAuthError(false) en onClick,focus, etc
-      setButtonLoading(false);
+      setAuthError(true);
+      setWaitingResponse(false);
       // console.log(error);
     }
   };
+
+  const mapStrengthMeterErrors = (errors) => {
+    if (errors) {
+      if (Array.isArray(errors)) {
+        return errors.map((message) => <Text key={message}>{message}</Text>);
+      } else {
+        return errors;
+      }
+    } else {
+      return null;
+    }
+  };
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
   if (loggedOut) {
+    console.log(errors);
     return (
       <>
         <Text pb="sm">Log In</Text>
@@ -52,51 +69,39 @@ export default function LoginForm() {
           </Text>
         ) : null}
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* <Input.Wrapper
-                    error={errors.username?.type === 'required' && <p role="alert">Username is required</p>}
-                    pb="sm"
-                >
-                    <Input
-                    onFocus={ () => setAuthError(false) }
-                        placeholder="Your Username"
-                        {...register("username", { required: true })}
-                        aria-invalid={
-                            errors.username ? "true" : "false"
-                        }
-                    />
-                </Input.Wrapper> */}
-          <Input.Wrapper
+          <TextInput
+            withAsterisk
+            label="Email"
+            pb="sm"
+            disabled={waitingResponse}
+            error={errors.email && errors.email?.message}
+            onFocus={() => setAuthError(false)}
+            placeholder="Your Email"
+            {...register("email")}
+            aria-invalid={errors.email ? "true" : "false"}
+          />
+          <TextInput
+            withAsterisk
+            label="Password"
+            pb="sm"
+            disabled={waitingResponse}
             error={
-              errors.email?.type === "required" && (
-                <p role="alert">Email is required</p>
+              errors?.password && (
+                <>
+                  {errors.password?.types.too_small ? (
+                    <Text>{errors.password.message}</Text>
+                  ) : null}
+                  {mapStrengthMeterErrors(errors.password.types.invalid_string)}
+                </>
               )
             }
-            pb="sm"
-          >
-            <Input
-              onFocus={() => setAuthError(false)}
-              placeholder="Your Email"
-              {...register("email", { required: true })}
-              aria-invalid={errors.email ? "true" : "false"} //for accesibility
-            />
-          </Input.Wrapper>
-          <Input.Wrapper
-            error={
-              errors.password?.type === "required" && (
-                <p role="alert">Password is required</p>
-              )
-            }
-            pb="sm"
-          >
-            <Input
-              onFocus={() => setAuthError(false)}
-              placeholder="Password"
-              {...register("password", { required: true })}
-              aria-invalid={errors.password ? "true" : "false"}
-            />
-          </Input.Wrapper>
+            onFocus={() => setAuthError(false)}
+            placeholder="Your Password"
+            {...register("password")}
+            aria-invalid={errors.password ? "true" : "false"}
+          />
 
-          <Button type="submit" loading={buttonLoading}>
+          <Button type="submit" loading={waitingResponse}>
             Submit
           </Button>
         </form>

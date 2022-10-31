@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useForm, Controller } from "react-hook-form";
@@ -34,12 +34,13 @@ export default function RegisterForm() {
     control,
   } = useForm({
     resolver: zodResolver(schema),
+    criteriaMode: "all",
   });
-  const navigate = useNavigate();
-  const { isLoading, loggedOut } = useUser();
   const [waitingResponse, setWaitingResponse] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [imgFile, setImgFile] = useState();
+  const { isLoading, loggedOut } = useUser();
+  const navigate = useNavigate();
   /*   useEffect(() => {
     if (loggedOut === false) {
       navigate("/account/profile");
@@ -61,6 +62,19 @@ export default function RegisterForm() {
     }
     navigate("/account/login");
   };
+
+  const mapStrengthMeterErrors = (errors) => {
+    if (errors) {
+      if (Array.isArray(errors)) {
+        return errors.map((message) => <Text key={message}>{message}</Text>);
+      } else {
+        return errors;
+      }
+    } else {
+      return null;
+    }
+  };
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -109,10 +123,19 @@ export default function RegisterForm() {
           <TextInput
             withAsterisk
             label="Password"
-            description="Password must include at least one uppercase letter, lowercase letter, number and special character"
+            description="Password be at least 8 characters long and include at least one uppercase letter, lowercase letter, number and special character"
             pb="sm"
             disabled={waitingResponse}
-            error={errors?.password && errors.password?.message}
+            error={
+              errors?.password && (
+                <>
+                  {errors.password?.types.too_small ? (
+                    <Text>{errors.password.message}</Text>
+                  ) : null}
+                  {mapStrengthMeterErrors(errors.password.types.invalid_string)}
+                </>
+              )
+            }
             onFocus={() => setAuthError(false)}
             placeholder="Password"
             {...register("password")}
@@ -153,6 +176,8 @@ export default function RegisterForm() {
             pb="sm"
             disabled={waitingResponse}
             error={errors?.phone && <p role="alert">{errors.phone?.message}</p>}
+            label="Phone"
+            withAsterisk
           >
             <Controller
               control={control}

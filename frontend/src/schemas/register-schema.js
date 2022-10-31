@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
-  formatPhoneNumber,
-  formatPhoneNumberIntl,
+  /*   formatPhoneNumber,
+  formatPhoneNumberIntl, */
   isPossiblePhoneNumber,
 } from "react-phone-number-input";
 
@@ -14,6 +14,7 @@ const registerSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Required" })
+    .min(8, { message: "Password must be at least 8 characters long" })
     .regex(/[0-9]/, {
       message: "Must contain at least one number",
     })
