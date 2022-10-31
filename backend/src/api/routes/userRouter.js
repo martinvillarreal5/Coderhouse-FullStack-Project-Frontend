@@ -9,7 +9,7 @@ import {
   postLogout,
 } from "../controllers/userController.js";
 import { ensureAuth, ensureAdminAuth } from "../middleware/auth.js";
-import { avatarUpload } from "../utils/multer.js";
+import { avatarUpload } from "../middleware/multer.js";
 
 const router = Router();
 

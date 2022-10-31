@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ensureAdminAuth } from "../middleware/auth.js";
+import { pictureUpload } from "../middleware/multer.js";
 import {
   getProducts,
   getProductById,
@@ -7,7 +8,6 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/productController.js";
-import { pictureUpload } from "../utils/multer.js";
 
 const router = Router();
 

@@ -2,12 +2,13 @@ import multer from "multer";
 //import { fileURLToPath } from 'url';
 import { getProductById } from "../../services/productServices.js";
 
+// !!! Fix folders not being automatically created
+
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/images/avatar");
   },
   filename: (req, file, cb) => {
-    //console.log(file);
     const ext = file.mimetype.split("/")[1];
     cb(
       null,
@@ -24,7 +25,6 @@ const pictureStorage = multer.diskStorage({
     //console.log(file);
     const ext = file.mimetype.split("/")[1];
     const product = await getProductById(req.params.id);
-    console.log(product);
     if (!product) {
       // TODO improve
       const error = new Error("Product Not Found");
