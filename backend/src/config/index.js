@@ -1,27 +1,27 @@
 import "dotenv/config";
 
+const node_env = process.env.NODE_ENV;
+
 export const serverConfig = {
-  port: process.env.PORT,
+  port: node_env === "production" ? process.env.PORT : process.env.PORT_DEV,
   secret: process.env.SECRET,
 };
 
 export const databaseConfig = {
-  mongoDbUrl:
-    "mongodb+srv://VillarrealDev:" +
-    process.env.MONGODBPASSWORD +
-    "@cluster0.oc4hq9p.mongodb.net/?retryWrites=true&w=majority",
+  mongoDbUrl: `mongodb+srv://VillarrealDev:${
+    node_env === "production"
+      ? process.env.MONGODBPASSWORD
+      : process.env.MONGODBPASSWORD_DEV
+  }@cluster0.oc4hq9p.mongodb.net/?retryWrites=true&w=majority`,
 };
 
 export const mailerConfig = {
-  email: process.env.MAILER_EMAIL,
-  password: process.env.MAILER_PASS,
+  email:
+    node_env === "production"
+      ? process.env.MAILER_EMAIL
+      : process.env.MAILER_EMAIL_DEV,
+  password:
+    node_env === "production"
+      ? process.env.MAILER_PASS
+      : process.env.MAILER_PASS_DEV,
 };
-
-/* export const twilioConfig = {
-  accountSid: process.env.TWILIO_SID,
-  authToken: process.env.TWILIO_AUTH_TOKEN,
-  twilioPhone: process.env.TWILIO_PHONE,
-  twilioWhatsapp: process.env.TWILIO_WHATSAPP,
-  adminPhone: "+5492616964632",
-};
- */
