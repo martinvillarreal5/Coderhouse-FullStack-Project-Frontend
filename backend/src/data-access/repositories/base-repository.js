@@ -11,7 +11,6 @@ await mongoose
 class BaseRepository {
   constructor(model) {
     this.model = model;
-    //console.log(this.model.collection.collectionName)
   }
 
   async getById(id) {
@@ -23,46 +22,45 @@ class BaseRepository {
     //? findOne returns null when no document satisfies the field in the filter
     //! But if the specified field in the filter does not exist,
     //! (for example because of a typo), MongoDB returns an arbitrary document.
-    //! This can cause some really bad bugs and security issues.
+    //! This can cause some really bad bugs and security issues. Check strict schema mode
   }
 
   async getAll() {
-    return await this.model.find({});
+    return await this.model.find({}).exec();
     // ? find returns a empty array if didnt found a doc
     //! find method has the same problem as findOne above
   }
 
   async create(object) {
-    const newObject = await this.model.create(object);
-    return newObject;
+    return await this.model.create(object);
   }
 
   async save(modelInstance) {
-    //test
-    const savedObject = await modelInstance.save();
-    return savedObject;
+    return await modelInstance.save();
   }
 
   async updateById(id, data) {
-    const updatedObject = await this.model.findByIdAndUpdate(
+    return await this.model.findByIdAndUpdate(
       id,
-      //TODO: check {runValidators: true}
       {
         $set: data,
       },
-      { new: true } // returns new object instead of the old one
+      {
+        runValidators: true,
+        new: true, // returns new object instead of the old one
+      }
     );
-    return updatedObject;
   }
+
   async deleteById(id) {
-    const deletedProduct = await this.model.findByIdAndRemove(id);
-    return deletedProduct; //change to return nothing?
+    await this.model.findByIdAndRemove(id);
   }
 
   async deleteAll() {
     //Empty the collection
-    const collectionName = this.model.collection.collectionName;
-    await mongoose.connection.db.dropCollection(collectionName);
+    await mongoose.connection.db.dropCollection(
+      this.model.collection.collectionName
+    );
   }
 }
 
