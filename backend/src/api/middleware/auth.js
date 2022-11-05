@@ -1,22 +1,24 @@
+import logger from "../../lib/logger";
+
 const ensureAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
-    console.log("User is authenticated");
+    logger.info(`User ${req.user.email} is authenticated`);
     return next();
   }
-  console.log("Not Auth");
+  logger.info(`User ${req.user.email} is NOT authenticated`);
   res.status(401).json("Not authenticated, user must be logged in");
 };
 
 const ensureAdminAuth = (req, res, next) => {
   if (req.isAuthenticated() && req.user.isAdmin) {
     if (req.user.isAdmin) {
-      console.log("User is authenticated and is Admin");
+      logger.info(`User ${req.user.email} is authenticated and IS ADMIN`);
       return next();
     }
-    console.log("Not Admin");
+    logger.info(`User ${req.user.email} is authenticated but IS NOT ADMIN`);
     return res.status(403).json("Not authorized, user must be Admin");
   } else {
-    console.log("Not Auth");
+    logger.info(`User ${req.user.email} is NOT authenticated`);
     return res.status(401).json("Not authenticated, user must be logged in");
   }
 };

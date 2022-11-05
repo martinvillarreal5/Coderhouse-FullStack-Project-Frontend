@@ -36,7 +36,7 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
-    status: {
+    state: {
       // ? is set in the server, probably dont need extra validation
       type: String,
       required: true,

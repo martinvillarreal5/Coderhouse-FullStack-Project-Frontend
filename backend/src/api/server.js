@@ -1,7 +1,7 @@
-import * as http from 'http';
-import { serverConfig } from '../config/index.js';
-import logger from '../utils/logger.js';
-import initializeExpressApp from './app.js'
+import * as http from "http";
+import { serverConfig } from "../config/index.js";
+import logger from "../lib/logger.js";
+import initializeExpressApp from "./app.js";
 
 async function startWebServer() {
   //app
@@ -15,7 +15,7 @@ async function openConnection(expressApp) {
     const portToListenTo = serverConfig.port;
     const webServerPort = portToListenTo || 0;
     logger.info(`Server is about to listen to port ${webServerPort}`);
-    const server = http.createServer(expressApp)
+    const server = http.createServer(expressApp);
     const connection = server.listen(webServerPort, () => {
       resolve(connection.address());
     });

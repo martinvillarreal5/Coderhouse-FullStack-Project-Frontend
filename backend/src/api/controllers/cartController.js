@@ -14,7 +14,7 @@ const getCart = async (req, res, next) => {
     if (cart === null || cart.products.length < 1) {
       // null means the findOne query couldn't find a coincidence. i.e., the user doesnt have a cart yet
       // or has one but without products.
-      //TODO: test product removal
+      //? Move this to service?
       return res.status(204).end();
     }
     res.status(200).json(cart);

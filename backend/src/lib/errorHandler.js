@@ -1,15 +1,41 @@
-import logger from "../../utils/logger.js";
+import logger from "./logger.js";
+import * as util from "util";
 
 let httpServerRef;
 
 const errorHandler = {
+  // Listen to the global process-level error events
+  listenToErrorEvents: (httpServer) => {
+    httpServerRef = httpServer;
+    process.on("uncaughtException", async (error) => {
+      await errorHandler.handleError(error);
+    });
+
+    process.on("unhandledRejection", async (reason) => {
+      await errorHandler.handleError(reason);
+    });
+
+    process.on("SIGTERM", async () => {
+      logger.error(
+        "App received SIGTERM event, try to gracefully close the server"
+      );
+      await terminateHttpServerAndExit();
+    });
+
+    process.on("SIGINT", async () => {
+      logger.error(
+        "App received SIGINT event, try to gracefully close the server"
+      );
+      await terminateHttpServerAndExit();
+    });
+  },
+
   handleError: (errorToHandle) => {
     try {
       const appError = normalizeError(errorToHandle);
-      logger.error(appError); //check
+      logger.error(appError, appError.message); //check
       // crash when an unknown error (non-trusted) is being thrown
       if (!appError.isTrusted) {
-        logger.info("not trusted error catched");
         terminateHttpServerAndExit();
       }
     } catch (handlingError) {
@@ -31,20 +57,19 @@ const terminateHttpServerAndExit = async () => {
   process.exit();
 };
 
-// The input might won't be 'AppError' or even 'Error' instance, the output of this function will be - AppError.
 const normalizeError = (errorToHandle) => {
   if (errorToHandle instanceof AppError) {
     return errorToHandle;
   }
   if (errorToHandle instanceof Error) {
+    logger.info("Normalizing Error");
     const appError = new AppError(
       errorToHandle.name,
       errorToHandle.message,
-      errorToHandle.HTTPStatus || errorToHandle.status, //check,
-      errorToHandle.isTrusted,
-      errorToHandle.cause
+      errorToHandle.HTTPStatus || errorToHandle.status || 500
     );
-    appError.stack = errorToHandle.stack;
+    appError.stack =
+      process.env.NODE_ENV === "development" ? errorToHandle.stack : {};
     return appError;
   }
   // meaning it could be any type,
@@ -58,13 +83,7 @@ const normalizeError = (errorToHandle) => {
 };
 
 class AppError extends Error {
-  constructor(
-    name,
-    message,
-    HTTPStatus = 500,
-    isTrusted = false,
-    cause = "unknow cause"
-  ) {
+  constructor(name, message, HTTPStatus = 500, isTrusted = true, cause) {
     super(message);
     this.name = name;
     this.HTTPStatus = HTTPStatus;

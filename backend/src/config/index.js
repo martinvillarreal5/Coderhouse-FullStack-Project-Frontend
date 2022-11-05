@@ -1,6 +1,10 @@
 import "dotenv/config";
 
-const node_env = process.env.NODE_ENV;
+export const node_env = process.env.NODE_ENV;
+
+export const loggerConfig = {
+  logLevel: node_env === "production" ? "error" : "debug",
+};
 
 export const serverConfig = {
   port: node_env === "production" ? process.env.PORT : process.env.PORT_DEV,

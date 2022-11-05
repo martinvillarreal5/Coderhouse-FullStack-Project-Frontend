@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import { databaseConfig } from "../../config/index.js";
+import logger from "../../lib/logger.js";
 
 await mongoose
   .connect(databaseConfig.mongoDbUrl)
-  .then(() => console.log("DB Connection Successfull!"))
+  .then(() => logger.info("MongoDb Connection Successfull"))
   .catch((error) => {
-    console.log("Error en la conección con mongodb: ", error);
+    logger.error(error, "Error trying to connect to MongoDb");
   });
 
 class BaseRepository {
@@ -48,12 +49,16 @@ class BaseRepository {
       {
         runValidators: true,
         new: true, // returns new object instead of the old one
+        //select: "fieldIWant anotherFieldIWant"
+        //select: {_id: 0} //excludes _id, includes other fields
+        //select: {_id: 1} //includes _id, excludes other fields
       }
     );
   }
 
   async deleteById(id) {
     await this.model.findByIdAndRemove(id);
+    return;
   }
 
   async deleteAll() {
@@ -61,6 +66,7 @@ class BaseRepository {
     await mongoose.connection.db.dropCollection(
       this.model.collection.collectionName
     );
+    return;
   }
 }
 

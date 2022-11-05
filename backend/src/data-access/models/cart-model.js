@@ -27,7 +27,7 @@ let itemSchema = new Schema(
     },
   },
   {
-    timestamps: true, // implementar timestamp cada que vez que se modifique un producto (cantidad, nuevo)
+    timestamps: true,
   }
 );
 

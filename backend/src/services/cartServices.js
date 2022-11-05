@@ -6,15 +6,16 @@ const getCartById = async (id) => {
 };
 
 const getCart = async (paramObject) => {
+  //TODO update cart info (product info, remove products that dont exist anymore)
   return await CartRepository.getOne(paramObject);
 };
 
 const getCarts = async () => {
+  //TODO update carts info (products info, remove products that dont exist anymore)
   return await CartRepository.getAll();
 };
 
 const addProductToCart = async (email, productData) => {
-  console.log(productData);
   //Se crea un carrito cuando el cliente guarda un producto, si es que no existe ya el carrito
   const { productId, quantity } = productData; // TODO validate this
   const existingProduct = await ProductRepository.getById(productId);

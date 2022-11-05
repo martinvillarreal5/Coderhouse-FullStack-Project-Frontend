@@ -46,24 +46,6 @@ const postRegister = async (req, res, next) => {
   }
 };
 
-const postRegisterAdmin = async (req, res, next) => {
-  try {
-    const existingUser = await userServices.getByEmail(req.body.email);
-    if (existingUser) {
-      return res.status(409).json("Email is already in use");
-    }
-    if (!req.file) {
-      //TODO improve error handling here or in the multer.js
-      return res.status(409).json("Avatar picture didn't upload");
-    }
-    req.body.avatarUrl = req.file.path;
-    await userServices.registerAdmin(req.body);
-    res.status(201).json("Register Admin Ok");
-  } catch (error) {
-    next(error);
-  }
-};
-
 const getUsersList = async (req, res, next) => {
   try {
     const users = await userServices.getUsers();
@@ -97,11 +79,4 @@ const postLogout = (req, res, next) => {
 
 // TODO: add a delete user method, that also deletes the user's cart
 
-export {
-  getUserInfo,
-  getUsersList,
-  postLogin,
-  postRegister,
-  postRegisterAdmin,
-  postLogout,
-};
+export { getUserInfo, getUsersList, postLogin, postRegister, postLogout };

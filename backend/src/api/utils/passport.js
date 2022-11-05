@@ -1,7 +1,5 @@
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import bcrypt from "bcrypt";
-import logger from "../../utils/logger.js";
 import { getByEmail, getUserById } from "../../services/userServices.js";
 import passport from "passport";
 
@@ -24,11 +22,11 @@ const localLoginStrategy = new LocalStrategy(
       if (!verifyPassword(password, user.passwordHash)) {
         return done(null, false, { message: "Invalid Credentials." });
       }
+      // ? instead of returning a message, add error intead of null?)
       return done(null, user);
     } catch (error) {
       // TODO add better error handling
-      console.log("Error in Login Strategy", error);
-      done("Login Error", null);
+      done(error, null);
     }
   }
 );
@@ -51,7 +49,7 @@ export default async function initializePassport(expressApp) {
     try {
       const user = await getUserById(id);
       if (user) {
-        return done(null, user); // return valid object if user exists in our database
+        return done(null, user); // return valid object if user exists in database
       } else {
         return done(null, false); // return false if user doesn't exists
       }

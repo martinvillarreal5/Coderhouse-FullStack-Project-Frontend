@@ -1,5 +1,6 @@
 import { createTransport } from "nodemailer";
 import { mailerConfig } from "../../config/index.js";
+import logger from "../../lib/logger.js";
 
 const transporter = createTransport({
   service: "gmail",
@@ -12,7 +13,6 @@ const transporter = createTransport({
 
 export const sendNewRegisterNotification = async (user) => {
   const mailOptions = {
-    from: "Servidor Node.js",
     to: mailerConfig.email,
     subject: "Nuevo Registro de Usuario",
     html: `<h1 style="color: blue;">Nuevo Registro: </h1>
@@ -20,7 +20,7 @@ export const sendNewRegisterNotification = async (user) => {
     `,
   };
   const info = await transporter.sendMail(mailOptions);
-  console.log(info); //logs new admin created...
+  logger.info(info, "New register mail sended");
 };
 
 export const sendNewOrderMail = async (userData, productsList) => {
@@ -36,7 +36,6 @@ export const sendNewOrderMail = async (userData, productsList) => {
     return accumulator + product.price * product.quantity;
   }, 0);
   const mailOptions = {
-    from: "Servidor Node.js",
     to: mailerConfig.email,
     subject: `Nuevo Pedido de ${userData.firstName} ${userData.lastName}`,
     html: `<h1 style="color: blue;">Nuevo Pedido: </h1>
@@ -47,5 +46,5 @@ export const sendNewOrderMail = async (userData, productsList) => {
     `,
   };
   const info = await transporter.sendMail(mailOptions);
-  console.log(info);
+  logger.info(info, "New order mail sended");
 };

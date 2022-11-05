@@ -1,18 +1,14 @@
-import logger from "../../utils/logger.js";
-import { errorHandler } from "../utils/errorHandler.js";
+import logger from "../../lib/logger.js";
+import { errorHandler } from "../../lib/errorHandler.js";
 
-const handleRouteErrors = (error, req, res, next) => {
-  // Not implented
-  logger.error(error.message);
-
+const handleRouteErrors = async (error, req, res, next) => {
   if (error.name === "CastError") {
-    //return res.status(400).send({ error: 'malformatted id' });
+    logger.debug("Cast Error in route");
     error.HTTPStatus = 400;
     error.isTrusted = true;
     error.cause = "Malformated Id";
   } else if (error.name === "ValidationError") {
-    // failed mongoose validation
-    //return res.status(400).json({ error: error.message });
+    logger.debug("Validation Error in route");
     error.HTTPStatus = 400;
     error.isTrusted = true;
     error.cause = "Failed Validation";

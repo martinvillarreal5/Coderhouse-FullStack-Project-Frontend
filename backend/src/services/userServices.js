@@ -1,14 +1,12 @@
 import UserRepository from "../data-access/repositories/user-repository.js";
 import bcrypt from "bcrypt";
-import logger from "../utils/logger.js";
+import logger from "../lib/logger.js";
+import CartRepository from "../data-access/repositories/cart-repository.js";
 
 const getUserById = async (id) => {
   return UserRepository.getById(id);
 };
 
-/* const getByUsername = async (username) => {
-  return UserRepository.getByUsername(username);
-}; */
 const getByEmail = async (email) => {
   return UserRepository.getOne({ email: email });
 };
@@ -16,13 +14,6 @@ const getByEmail = async (email) => {
 const getUsers = async () => {
   const users = await UserRepository.getAll();
   return users;
-};
-
-const saveUser = async (data) => {
-  const user = data;
-  //? validar cada dato de arriba ? o no hace falta ya que hace eso en la squema de moongose
-  const savedUserId = UserRepository.create(user);
-  return savedUserId; //return saved  id?
 };
 
 const registerUser = async (userData) => {
@@ -38,6 +29,12 @@ const registerUser = async (userData) => {
     isAdmin: false,
   };
   const createdUser = await UserRepository.create(newUser);
+  if (createdUser) {
+    await CartRepository.create({
+      email: email,
+      products: [],
+    });
+  }
   logger.info(
     `New Admin created: ${createdUser.firstName + createdUser.lastName}, id: ${
       createdUser._id
@@ -46,27 +43,9 @@ const registerUser = async (userData) => {
   return createdUser;
 };
 
-const registerAdmin = async (userData) => {
-  const { password, email, firstName, lastName, phone, avatarUrl } = userData;
-  const newUser = {
-    email: email,
-    passwordHash: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
-    firstName: firstName,
-    lastName: lastName,
-    phone: phone,
-    avatarUrl: avatarUrl,
-    isAdmin: true,
-  };
-  await UserRepository.create(newUser);
-  return;
-};
-
 const updateUser = async (id, data) => {
-  if (!data) {
-    throw new Error("update user Data is empty or undefined");
-  }
-  //? Separar en diferentes servicios, para contraseña, correo y nombres
-  return await UserRepository.updateById(id, data); // ! Dont return sensible info
+  //? Separar en diferentes servicios, para contraseña, correo y nombres??
+  return await UserRepository.updateById(id, data); // ! Check if this return sensible info
 };
 
 const deleteUser = async (id) => {
@@ -76,11 +55,8 @@ const deleteUser = async (id) => {
 export {
   getUsers,
   getUserById,
-  //getByUsername,
   getByEmail,
-  saveUser,
   updateUser,
   deleteUser,
   registerUser,
-  registerAdmin,
 };

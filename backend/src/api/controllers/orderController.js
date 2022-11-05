@@ -18,9 +18,18 @@ export const createOrder = async (req, res, next) => {
   }
 };
 
-export const getOrders = async (req, res, next) => {
+export const getUserOrders = async (req, res, next) => {
   try {
     const orders = await orderServices.getOrders({ email: req.user.email });
+    res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllOrders = async (req, res, next) => {
+  try {
+    const orders = await orderServices.getOrders();
     res.status(200).json(orders);
   } catch (error) {
     next(error);

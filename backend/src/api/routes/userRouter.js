@@ -5,7 +5,6 @@ import {
   getUsersList,
   postLogin,
   postRegister,
-  postRegisterAdmin,
   postLogout,
 } from "../controllers/userController.js";
 import { ensureAuth, ensureAdminAuth } from "../middleware/auth.js";
@@ -17,7 +16,6 @@ router.get("/", getUserInfo);
 router.get("/list", ensureAdminAuth, getUsersList);
 router.post("/login", passport.authenticate("login"), postLogin);
 router.post("/register", avatarUpload.single("avatar"), postRegister);
-router.post("/admin", ensureAdminAuth, postRegisterAdmin); // TODO test more
 router.post("/logout", ensureAuth, postLogout);
 
 export default router;

@@ -6,7 +6,7 @@ import MongoStore from "connect-mongo";
 import middleware from "./middleware/middlewares.js";
 import handleRouteErrors from "./middleware/errorMiddleware.js";
 import router from "./routes/index.js";
-import { serverConfig, databaseConfig } from "../config/index.js";
+import { serverConfig, databaseConfig, node_env } from "../config/index.js";
 import initializePassport from "./utils/passport.js";
 //import { fileURLToPath } from 'url';
 //import path, { dirname } from 'path'
@@ -14,12 +14,16 @@ import initializePassport from "./utils/passport.js";
 export default function initializeExpressApp() {
   const expressApp = express();
   expressApp.use(
-    cors({
-      // Set this in espeficic routes that need it, or use a middleware?
-      origin: ["http://localhost:5173"],
-      credentials: true,
-    })
-  ); //Do not enable CORS for all routes in a production application. This can lead to security vulnerabilities
+    node_env === "production"
+      ? cors()
+      : cors({
+          // Set this in espeficic routes that need it, or use a middleware?
+          origin: ["http://localhost:5173"],
+          credentials: true,
+        })
+  );
+  // ? Do not enable CORS for all routes in a production application.
+  // ? This can lead to security vulnerabilities
 
   expressApp.use(express.urlencoded({ extended: true }));
   expressApp.use(express.json());
@@ -45,9 +49,7 @@ export default function initializeExpressApp() {
       },
       rolling: true,
       resave: false,
-      saveUninitialized: false /* 
-            keys: [],
-            secure: !isLocal */,
+      saveUninitialized: false,
     })
   );
 
