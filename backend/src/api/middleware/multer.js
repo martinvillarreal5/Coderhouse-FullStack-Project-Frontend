@@ -1,10 +1,7 @@
 import multer from "multer";
 import { AppError } from "../../lib/errorHandler.js";
-//import { fileURLToPath } from 'url';
 import { getProductById } from "../../services/productServices.js";
 import fs from "fs";
-
-// !!! Fix folders not being automatically created
 
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -29,10 +26,9 @@ const pictureStorage = multer.diskStorage({
     const ext = file.mimetype.split("/")[1];
     const product = await getProductById(req.params.id);
     if (!product) {
-      // TODO improve
       const error = new AppError(
         "Not Found",
-        "Product to update was not Found in the database",
+        "Product to update was not found in the database",
         404,
         true
       );
