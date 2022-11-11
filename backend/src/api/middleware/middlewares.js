@@ -1,10 +1,11 @@
 import logger from "../../lib/logger.js";
 
 const requestLogger = (req, res, next) => {
-  logger.info("Method:", req.method);
-  logger.info("Path:  ", req.path);
-  logger.info("Body:  ", req.body);
-  logger.info("---");
+  logger.info({
+    method: req.method,
+    path: req.path,
+    body: req.body,
+  });
   next();
 };
 
