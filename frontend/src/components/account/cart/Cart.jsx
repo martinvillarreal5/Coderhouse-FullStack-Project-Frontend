@@ -16,7 +16,8 @@ export default function Cart({ cartData, mutate }) {
   }, [loggedOut]); */
 
   const handleDeleteProduct = async (id, quantity) => {
-    await addProductToCart(id, quantity);
+    //await addProductToCart(id, quantity);
+    //TODO refactor to use new removeProductFromCart route
     mutate();
   };
 
