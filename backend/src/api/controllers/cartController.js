@@ -39,6 +39,18 @@ const addProductToCart = async (req, res, next) => {
   }
 };
 
+const removeProductFromCart = async (req, res, next) => {
+  try {
+    const cart = await cartServices.removeProductFromCart(
+      req.user.email,
+      req.params.id
+    );
+    res.status(200).json(cart);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteCart = async (req, res, next) => {
   try {
     await cartServices.deleteCart(req.params.id);
@@ -48,4 +60,11 @@ const deleteCart = async (req, res, next) => {
   }
 };
 
-export { getCart, getCarts, getCartById, addProductToCart, deleteCart };
+export {
+  getCart,
+  getCarts,
+  getCartById,
+  addProductToCart,
+  removeProductFromCart,
+  deleteCart,
+};

@@ -1,28 +1,88 @@
 import CartRepository from "../data-access/repositories/cart-repository.js";
 import ProductRepository from "../data-access/repositories/product-repository.js";
+import { AppError } from "../lib/errorHandler.js";
+import logger from "../lib/logger.js";
 
 const getCartById = async (id) => {
   return await CartRepository.getById(id);
 };
 
 const getCart = async (paramObject) => {
-  //TODO update cart info (product info, remove products that dont exist anymore)
   return await CartRepository.getOne(paramObject);
 };
 
 const getCarts = async () => {
-  //TODO update carts info (products info, remove products that dont exist anymore)
   return await CartRepository.getAll();
 };
 
-const addProductToCart = async (email, productData) => {
-  //Se crea un carrito cuando el cliente guarda un producto, si es que no existe ya el carrito
-  const { productId, quantity } = productData; // TODO validate this
+const actualizeCartProducts = async (products) => {
+  //? Instead of doing this, when each product gets updated/deleted also update the products in all carts somehow?
+  //? Maybe populate can do this easier?
+  const productIds = products.map((product) => {
+    return product.productId;
+  });
+  return await ProductRepository.getByIds(productIds); // Returns the actualized products
+  //? will not return any product that doesnt exists in the database
+};
+
+const removeProductFromCart = async (email, productId) => {
   const existingProduct = await ProductRepository.getById(productId);
   if (!existingProduct) {
-    throw new Error("Product to add doesn't exist in the database"); // TODO improve
+    throw new AppError(
+      "Invalid-Cart-Product",
+      "Product to add doesn't exist in the database",
+      true,
+      400
+    );
   }
-  const cart = await CartRepository.getOne({ email: email }); //get database cart instance
+  const cart = await CartRepository.getOne({ email: email });
+  if (!cart) {
+    throw new AppError(
+      "Invalid-Cart",
+      "User doesn't have a shopping cart yet",
+      true,
+      400
+    );
+  }
+  const productIndex = cart.products.findIndex((product) => {
+    return product.productId == productId;
+  });
+  if (productIndex < 0) {
+    throw new AppError(
+      "Invalid-Cart-Product",
+      "Product to remove is not in the cart",
+      true,
+      400
+    );
+  }
+  logger.info(
+    { cart: cart, productId: productId },
+    "Removing Product from Cart"
+  );
+  return await CartRepository.removeProduct(cart._id, productId);
+};
+
+const addProductToCart = async (email, productData) => {
+  //TODO add new method for update quantity
+  const { productId, quantity } = productData;
+  if (quantity < 1) {
+    throw new AppError(
+      "Invalid-Quantity",
+      "The quantity of the product to add to cart is a non positive value",
+      true,
+      400
+    );
+  }
+  const existingProduct = await ProductRepository.getById(productId);
+  if (!existingProduct) {
+    throw new AppError(
+      "Invalid-Cart-Product",
+      "Product to add doesn't exist in the database",
+      true,
+      400
+    );
+  }
+  const cart = await CartRepository.getOne({ email: email });
   //If cart already exists for user,
   if (cart) {
     const productIndex = cart.products.findIndex((product) => {
@@ -30,37 +90,47 @@ const addProductToCart = async (email, productData) => {
     });
     if (productIndex > -1) {
       //product is already in cart
-      let cartProduct = cart.products[productIndex];
-      cartProduct.quantity += quantity;
-      if (cartProduct.quantity < 1) {
-        cart.products.splice(productIndex, 1);
-      }
-    } else if (quantity > 0) {
-      //product is not in the cart and quantity is valid
-      cart.products.push({
+      const cartProduct = cart.products[productIndex];
+      logger.info(
+        { cart: cart, productId: productId, quantityToAdd: quantity },
+        "Adding Product to Cart: increasing existing product quantity."
+      );
+      return await CartRepository.updateProductQuantity(
+        cart._id,
+        productId,
+        cartProduct.quantity + quantity
+      );
+    }
+    //product is not in the cart
+    logger.info(
+      { cart: cart, productId: productId, quantityToAdd: quantity },
+      "Adding Product to Cart: adding new porduct."
+    );
+    return await CartRepository.addProduct(cart._id, {
+      productId: productId,
+      quantity: quantity,
+      description: existingProduct.description,
+      price: existingProduct.price,
+      title: existingProduct.title,
+    });
+  }
+  //Create new Cart
+  logger.info(
+    { userEmail: email, productId: productId, quantityToAdd: quantity },
+    "Adding Product to Cart: Creating a cart with new product."
+  );
+  return await CartRepository.create({
+    email: email,
+    products: [
+      {
         productId: productId,
         quantity: quantity,
         description: existingProduct.description,
         price: existingProduct.price,
         title: existingProduct.title,
-      });
-    }
-    return await CartRepository.save(cart); // ? Should i return updated cart?
-  } else if (quantity > 0) {
-    //Create new Cart
-    return await CartRepository.create({
-      email: email,
-      products: [
-        {
-          productId: productId,
-          quantity: quantity,
-          description: existingProduct.description,
-          price: existingProduct.price,
-          title: existingProduct.title,
-        },
-      ],
-    }); // ? Should i return created cart?
-  }
+      },
+    ],
+  });
 };
 
 const deleteCart = async (id) => {
@@ -72,5 +142,7 @@ export default {
   getCart,
   getCarts,
   addProductToCart,
+  removeProductFromCart,
   deleteCart,
+  actualizeCartProducts,
 };
