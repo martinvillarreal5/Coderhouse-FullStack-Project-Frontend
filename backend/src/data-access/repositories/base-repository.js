@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
 import { databaseConfig } from "../../config/index.js";
 import logger from "../../lib/logger.js";
+import { AppError } from "../../lib/errorHandler.js";
 
 await mongoose
   .connect(databaseConfig.mongoDbUrl)
   .then(() => logger.info("MongoDb Connection Successfull"))
   .catch((error) => {
-    logger.error(error, "Error trying to connect to MongoDb");
+    throw new AppError("database-connection", error.message, 500, true);
   });
+
+//TODO optimize database connections (use singleton pattern?)
 
 class BaseRepository {
   constructor(model) {
@@ -22,7 +25,7 @@ class BaseRepository {
     return await this.model.findOne(paramsObject).exec();
     //? findOne returns null when no document satisfies the field in the filter
     //! But if the specified field in the filter does not exist,
-    //! (for example because of a typo), MongoDB returns an arbitrary document.
+    //! (for example: because of a typo), MongoDB returns an arbitrary document.
     //! This can cause some really bad bugs and security issues. Check strict schema mode
   }
 
@@ -62,7 +65,6 @@ class BaseRepository {
   }
 
   async deleteAll() {
-    //Empty the collection
     await mongoose.connection.db.dropCollection(
       this.model.collection.collectionName
     );

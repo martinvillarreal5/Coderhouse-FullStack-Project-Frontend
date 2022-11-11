@@ -38,7 +38,6 @@ const cartSchema = new Schema(
       default: undefined,
     },
     email: {
-      //change to email?
       type: String,
       ref: "User",
       required: true,

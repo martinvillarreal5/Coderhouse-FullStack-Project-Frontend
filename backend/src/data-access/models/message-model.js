@@ -29,4 +29,4 @@ messageSchema.set("toJSON", {
   },
 });
 
-export default mongoose.model("Order", orderSchema);
+export default mongoose.model("Messagte", messageSchema);

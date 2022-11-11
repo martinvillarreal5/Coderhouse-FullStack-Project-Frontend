@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-let itemSchema = new mongoose.Schema({
+let itemSchema = new Schema({
   productId: {
     type: Schema.Types.ObjectId,
     ref: "Product",
@@ -11,7 +12,7 @@ let itemSchema = new mongoose.Schema({
     required: true,
   },
   description: {
-    type: string,
+    type: String,
     required: true,
   },
   quantity: {
