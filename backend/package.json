@@ -6,7 +6,8 @@
   "main": "./dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/index.js | pino-pretty"
+    "dev": "nodemon ./src/index.js | pino-pretty",
+    "lint:check": "eslint ."
   },
   "author": "",
   "license": "ISC",

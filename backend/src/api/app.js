@@ -5,7 +5,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import middleware from "./middleware/middlewares.js";
 import handleRouteErrors from "./middleware/errorMiddleware.js";
-import router from "./routes/index.js";
+import routes from "./routes/index.js";
 import { serverConfig, databaseConfig, node_env } from "../config/index.js";
 import initializePassport from "./utils/passport.js";
 //import { fileURLToPath } from 'url';
@@ -45,7 +45,7 @@ export default function initializeExpressApp() {
       cookie: {
         httpOnly: false,
         secure: false,
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
       },
       rolling: true,
       resave: false,
@@ -60,7 +60,7 @@ export default function initializeExpressApp() {
     res.send("Hello World!");
   });
 
-  expressApp.use("/", router);
+  expressApp.use("/", routes);
   expressApp.use(handleRouteErrors);
   expressApp.use(middleware.unknownEndpoint);
   return expressApp;
