@@ -2,6 +2,7 @@ import UserRepository from "../data-access/repositories/user-repository.js";
 import bcrypt from "bcrypt";
 import logger from "../lib/logger.js";
 import CartRepository from "../data-access/repositories/cart-repository.js";
+import { sendNewRegisterNotification } from "../lib/mailer.js";
 
 const getUserById = async (id) => {
   return UserRepository.getById(id);
@@ -19,7 +20,6 @@ const getUsers = async () => {
 const registerUser = async (userData) => {
   const { password, email, firstName, lastName, phone, avatarUrl } = userData;
   const newUser = {
-    //username: username,
     passwordHash: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
     email: email,
     firstName: firstName,
@@ -40,12 +40,15 @@ const registerUser = async (userData) => {
       createdUser._id
     }`
   );
+
+  sendNewRegisterNotification(createdUser);
   return createdUser;
 };
 
 const updateUser = async (id, data) => {
-  //? Separar en diferentes servicios, para contraseña, correo y nombres??
-  return await UserRepository.updateById(id, data); // ! Check if this return sensible info
+  return await UserRepository.updateById(id, data);
+  // ! Check if this return sensible info
+  // ? Could use a dto here?
 };
 
 const deleteUser = async (id) => {

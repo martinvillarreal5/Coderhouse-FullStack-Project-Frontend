@@ -1,5 +1,4 @@
 import * as userServices from "../../services/userServices.js";
-import { sendNewRegisterNotification } from "../utils/mailer.js";
 
 const getUserInfo = (req, res, next) => {
   try {
@@ -38,8 +37,7 @@ const postRegister = async (req, res, next) => {
       return res.status(409).json("Avatar didnt upload");
     }
     req.body.avatarUrl = req.file.path;
-    const newUser = await userServices.registerUser(req.body);
-    sendNewRegisterNotification(newUser); // ? move thes to service layer?
+    await userServices.registerUser(req.body);
     res.status(201).json("Register Ok");
   } catch (error) {
     next(error);
