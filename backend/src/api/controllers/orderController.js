@@ -1,17 +1,12 @@
 import * as orderServices from "../../services/orderServices.js";
-import { sendNewOrderMail } from "../utils/mailer.js";
 
 export const createOrder = async (req, res, next) => {
   try {
-    const newOrder = await orderServices.createOrder(req.user.email);
-    await sendNewOrderMail(
-      {
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        email: req.user.email,
-      },
-      newOrder.products
-    );
+    const newOrder = await orderServices.createOrder({
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+    });
     res.status(201).json(newOrder);
   } catch (error) {
     next(error);
