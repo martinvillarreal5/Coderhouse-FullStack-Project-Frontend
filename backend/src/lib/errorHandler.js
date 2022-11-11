@@ -4,32 +4,6 @@ import * as util from "util";
 let httpServerRef;
 
 const errorHandler = {
-  // Listen to the global process-level error events
-  listenToErrorEvents: (httpServer) => {
-    httpServerRef = httpServer;
-    process.on("uncaughtException", async (error) => {
-      await errorHandler.handleError(error);
-    });
-
-    process.on("unhandledRejection", async (reason) => {
-      await errorHandler.handleError(reason);
-    });
-
-    process.on("SIGTERM", async () => {
-      logger.error(
-        "App received SIGTERM event, try to gracefully close the server"
-      );
-      await terminateHttpServerAndExit();
-    });
-
-    process.on("SIGINT", async () => {
-      logger.error(
-        "App received SIGINT event, try to gracefully close the server"
-      );
-      await terminateHttpServerAndExit();
-    });
-  },
-
   handleError: (errorToHandle) => {
     try {
       const appError = normalizeError(errorToHandle);
