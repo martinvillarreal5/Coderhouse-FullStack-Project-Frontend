@@ -1,7 +1,7 @@
 import { Button, Table, Text, ActionIcon, ThemeIcon } from "@mantine/core";
 import { sendNewOrder } from "../../../lib/orderLib";
 import { IconTrash } from "@tabler/icons";
-import { addProductToCart } from "../../../lib/cartLib";
+import { addProductToCart, removeProductFromCart } from "../../../lib/cartLib";
 
 //import { useEffect } from "react";
 
@@ -16,8 +16,7 @@ export default function Cart({ cartData, mutate }) {
   }, [loggedOut]); */
 
   const handleDeleteProduct = async (id, quantity) => {
-    //await addProductToCart(id, quantity);
-    //TODO refactor to use new removeProductFromCart route
+    const data = await removeProductFromCart(id, quantity);
     mutate();
   };
 
