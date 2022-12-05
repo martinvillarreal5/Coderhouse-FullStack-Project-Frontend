@@ -18,7 +18,7 @@ export default function LoginForm() {
   });
   const [authError, setAuthError] = useState(false);
   const [waitingResponse, setWaitingResponse] = useState(false);
-  const { isLoading, isLogged, loggedOut, mutate } = useUser();
+  const { isLoading, isLogged, mutate } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,56 +58,54 @@ export default function LoginForm() {
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
-  if (loggedOut) {
-    console.log(errors);
-    return (
-      <>
-        <Text pb="sm">Log In</Text>
-        {authError ? (
-          <Text pb="sm" color="red">
-            Wrong Credentials
-          </Text>
-        ) : null}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextInput
-            withAsterisk
-            label="Email"
-            pb="sm"
-            disabled={waitingResponse}
-            error={errors.email && errors.email?.message}
-            onFocus={() => setAuthError(false)}
-            placeholder="Your Email"
-            {...register("email")}
-            aria-invalid={errors.email ? "true" : "false"}
-          />
-          <TextInput
-            withAsterisk
-            label="Password"
-            pb="sm"
-            disabled={waitingResponse}
-            error={
-              errors?.password && (
-                <>
-                  {errors.password?.types.too_small ? (
-                    <Text>{errors.password.message}</Text>
-                  ) : null}
-                  {mapStrengthMeterErrors(errors.password.types.invalid_string)}
-                </>
-              )
-            }
-            onFocus={() => setAuthError(false)}
-            placeholder="Your Password"
-            {...register("password")}
-            aria-invalid={errors.password ? "true" : "false"}
-          />
-
-          <Button type="submit" loading={waitingResponse}>
-            Submit
-          </Button>
-        </form>
-      </>
-    );
-  } else {
-    return <Text>Redirecting...</Text>;
+  if (isLogged) {
+    return <Text>User is already logged in, redirecting...</Text>;
   }
+  return (
+    <>
+      <Text pb="sm">Log In</Text>
+      {authError ? (
+        <Text pb="sm" color="red">
+          Wrong Credentials
+        </Text>
+      ) : null}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <TextInput
+          withAsterisk
+          label="Email"
+          pb="sm"
+          disabled={waitingResponse}
+          error={errors.email && errors.email?.message}
+          onFocus={() => setAuthError(false)}
+          placeholder="Your Email"
+          {...register("email")}
+          aria-invalid={errors.email ? "true" : "false"}
+        />
+        <TextInput
+          withAsterisk
+          label="Password"
+          pb="sm"
+          disabled={waitingResponse}
+          error={
+            errors?.password && (
+              <>
+                {errors.password?.types.too_small ? (
+                  <Text>{errors.password.message}</Text>
+                ) : null}
+                {mapStrengthMeterErrors(errors.password.types.invalid_string)}
+              </>
+            )
+          }
+          onFocus={() => setAuthError(false)}
+          placeholder="Your Password"
+          {...register("password")}
+          aria-invalid={errors.password ? "true" : "false"}
+        />
+
+        <Button type="submit" loading={waitingResponse}>
+          Submit
+        </Button>
+      </form>
+    </>
+  );
 }
