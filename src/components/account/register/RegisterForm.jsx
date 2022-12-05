@@ -20,13 +20,9 @@ import { SignUp } from "../../../lib/authLib";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
-//TODO add disabled state tp inputs when sending request
-
 //TODO set message when username or mail is already in use
 
 export default function RegisterForm() {
-  //TODO Make a rehusable input component for text fields,
-  //IDEA: use a high order comp for login and register with a base form comp
   const {
     register,
     formState: { errors },
@@ -39,13 +35,13 @@ export default function RegisterForm() {
   const [waitingResponse, setWaitingResponse] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [imgFile, setImgFile] = useState();
-  const { isLoading, loggedOut } = useUser();
+  const { isLoading, isLogged } = useUser();
   const navigate = useNavigate();
-  /*   useEffect(() => {
-    if (loggedOut === false) {
+  useEffect(() => {
+    if (isLogged) {
       navigate("/account/profile");
     }
-  }, [loggedOut]); */
+  }, [isLogged]);
 
   function handleChange(file) {
     file ? setImgFile(URL.createObjectURL(file)) : setImgFile(null);
@@ -78,7 +74,7 @@ export default function RegisterForm() {
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
-  if (loggedOut) {
+  if (!isLogged) {
     return (
       <>
         {authError ? (

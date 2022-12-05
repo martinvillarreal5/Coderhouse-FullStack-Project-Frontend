@@ -10,7 +10,7 @@ import useUser from "../../../hooks/useUser.js";
 
 export default function ProductListContainer() {
   const { data: products, isLoading, isError } = useData("/products");
-  const { loggedOut } = useUser();
+  const { isLogged } = useUser();
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -23,7 +23,7 @@ export default function ProductListContainer() {
 
   return (
     <>
-      <ProductList products={products} isLogged={!loggedOut}></ProductList>
+      <ProductList products={products} isLogged={isLogged}></ProductList>
     </>
   );
 }

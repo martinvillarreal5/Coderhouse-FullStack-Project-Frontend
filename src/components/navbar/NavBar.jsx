@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { logOut } from "../../lib/authLib";
 import useUser from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
-//import React, { memo } from "react";
 
 export default function NavBar(props) {
   const { opened } = props;
@@ -12,14 +11,21 @@ export default function NavBar(props) {
 
   let accountSection = null;
   let adminSection = null;
+  let avatarSection = null;
 
   if (isLoading) {
     accountSection = <NavLink label="Loading..." />;
   } else if (isLogged) {
+    avatarSection = <></>; //TODO
     accountSection = (
       <>
         <NavLink component={Link} to="/account/profile" label="Profile" />
         <NavLink component={Link} to="/account/cart" label="My Cart" />
+        <NavLink
+          component={Link}
+          to="/account/global-chat"
+          label="Global Chat"
+        />
         <NavLink
           sx={{ color: "#fa5252" }}
           label="Log Out"
@@ -31,15 +37,17 @@ export default function NavBar(props) {
         />
       </>
     );
-    adminSection = (
-      <NavLink label="Admin" defaultOpened>
-        <NavLink
-          component={Link}
-          to="/products/admin/create"
-          label="Add Product"
-        />
-      </NavLink>
-    );
+    if (isAdmin) {
+      adminSection = (
+        <NavLink label="Admin" defaultOpened>
+          <NavLink
+            component={Link}
+            to="/products/admin/create"
+            label="Add Product"
+          />
+        </NavLink>
+      );
+    }
   } else {
     accountSection = (
       <>
