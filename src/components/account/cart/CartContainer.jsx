@@ -1,8 +1,9 @@
-import useCart from "../../../hooks/useCart";
 import { useEffect } from "react";
 import { Text } from "@mantine/core";
-import Cart from "./Cart";
 import { useNavigate } from "react-router-dom";
+
+import Cart from "./Cart";
+import useCart from "../../../hooks/useCart";
 
 export default function CartContainer() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function CartContainer() {
   }
 
   if (loggedOut) {
-    return <Text>Not logged in. Redirecting... </Text>;
+    return <Text>User is not logged in, redirecting... </Text>;
   }
 
   if (isError) {
@@ -31,7 +32,6 @@ export default function CartContainer() {
   }
 
   if (cart && !loggedOut) {
-    //console.log(cart);
     return <Cart cartData={cart} mutate={mutate} />;
   }
 }

@@ -3,18 +3,10 @@ import { sendNewOrder } from "../../../lib/orderLib";
 import { IconTrash } from "@tabler/icons";
 import { addProductToCart, removeProductFromCart } from "../../../lib/cartLib";
 
-//import { useEffect } from "react";
-
 // implement something like this https://ui.mantine.dev/component/table-scroll-area
 // and this https://ui.mantine.dev/component/table-sort
 
 export default function Cart({ cartData, mutate }) {
-  /* useEffect(() => {
-    if (loggedOut) {
-      navigate("/account/login");
-    }
-  }, [loggedOut]); */
-
   const handleDeleteProduct = async (id, quantity) => {
     const data = await removeProductFromCart(id, quantity);
     mutate();
