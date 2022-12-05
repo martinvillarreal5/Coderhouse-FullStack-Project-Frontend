@@ -13,6 +13,7 @@ const fetcher = (url) =>
     } */
     )
     .then((r) => {
+      console.log(r);
       if (r.status === 204) {
         const logInError = new Error("Not Logged In");
         logInError.status = 204;
@@ -34,7 +35,7 @@ const useUser = () => {
         //TODO Handle server conection error
 
         // Never retry for a specific key.
-        //if (key === '/api/user') return
+        if (key === "http://localhost:8080/user/") return;
 
         // Only retry up to 10 times.
         if (retryCount >= 10) return;
@@ -49,7 +50,6 @@ const useUser = () => {
     user: data,
     isAdmin: data?.isAdmin,
     isLogged: data && !error ? true : false,
-    loggedOut: error && error.status === 204,
     isLoading: !error && !data,
     isError: error,
     mutate, // check https://swr.vercel.app/examples/optimistic-ui

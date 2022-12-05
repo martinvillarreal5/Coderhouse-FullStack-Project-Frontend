@@ -41,7 +41,6 @@ const useCart = () => {
           return;
         }
         if (retryCount >= 5) return;
-        // Retry after 5 seconds.
         setTimeout(() => revalidate({ retryCount }), 5000);
       },
     }
