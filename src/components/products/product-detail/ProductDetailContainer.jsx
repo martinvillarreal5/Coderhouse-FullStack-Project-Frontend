@@ -12,7 +12,7 @@ export default function ProductDetailContainer() {
     isLoading,
   } = useData(`/products/${productId}`);
 
-  const { isAdmin } = useUser();
+  const { isAdmin, isLogged } = useUser();
 
   if (isLoading) {
     return <Text>Is Loading</Text>;
@@ -21,5 +21,11 @@ export default function ProductDetailContainer() {
     //change to 404
     return <Text>Error fetching data</Text>;
   }
-  return <ProductDetail product={product} isAdmin={isAdmin}></ProductDetail>;
+  return (
+    <ProductDetail
+      product={product}
+      isAdmin={isAdmin}
+      isLogged={isLogged}
+    ></ProductDetail>
+  );
 }
