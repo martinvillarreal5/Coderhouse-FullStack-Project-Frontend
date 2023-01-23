@@ -10,6 +10,7 @@ export const createProduct = async (data) => {
   formData.append("price", data.price);
   formData.append("stock", data.stock);
   formData.append("picture", data.picture);
+  formData.append("backPicture", data.backPicture);
   axios.defaults.withCredentials = true;
   const headers = {
     "Content-Type": "form-data",

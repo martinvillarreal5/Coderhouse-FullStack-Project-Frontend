@@ -25,5 +25,15 @@ const productSchema = z.object({
         ),
       ".jpg, .jpeg, .png and .webp files are accepted."
     ),
+  backPicture: z
+    .instanceof(File, { message: "Back Image is required" })
+    .refine((file) => file.size <= 500000, `Max file size is 5MB.`)
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+          file.type
+        ),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
 });
 export default productSchema;
