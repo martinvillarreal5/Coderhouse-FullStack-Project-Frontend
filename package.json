@@ -11,7 +11,9 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@hookform/resolvers": "^2.9.8",
+    "@mantine/carousel": "^5.10.0",
     "@mantine/core": "^5.4.1",
+    "@mantine/hooks": "^5.10.0",
     "@tabler/icons": "^1.107.0",
     "axios": "^0.27.2",
     "react": "^18.2.0",

@@ -13,7 +13,7 @@ dist
 tests
 old
 .env
-TODO
+TODO.txt
 *.local
 
 # Editor directories and files
