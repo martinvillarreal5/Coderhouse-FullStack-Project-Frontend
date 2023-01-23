@@ -7,12 +7,14 @@ const fetcher = (url) =>
   axios
     .get(url, {
       validateStatus: function (status) {
-        return status < 500; // Resuelve solo si el código de estado es menor que 500
+        return status < 500;
       },
     })
     .then((r) => {
       if (r.status === 401) {
-        const authError = new Error("Not Authorized");
+        const authError = new Error(
+          "Not Authorized, you must be logged in to access a cart"
+        );
         authError.status = 401;
         authError.info = r.data;
         throw authError;
@@ -31,13 +33,7 @@ const useCart = () => {
     fetcher,
     {
       onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-        //TODO Handle server conection error
-        if (
-          error.status === 404 ||
-          error.status === 401 ||
-          error.status === 204
-        ) {
-          //console.log(error.status);
+        if (error.status === 401 || error.status === 204) {
           return;
         }
         if (retryCount >= 5) return;
@@ -52,7 +48,7 @@ const useCart = () => {
     emptyCart: error && error.status === 204,
     isLoading: !error && !data,
     isError: error,
-    mutate, //
+    mutate,
   };
 };
 

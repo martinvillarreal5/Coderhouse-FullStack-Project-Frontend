@@ -27,6 +27,8 @@ const useUser = () => {
     "http://localhost:8080/user/",
     fetcher,
     {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
       onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
         // Never retry on 204 or 400+ codes.
         if (error.status === 204) return;
@@ -34,14 +36,11 @@ const useUser = () => {
 
         //TODO Handle server conection error
 
-        // Never retry for a specific key.
-        if (key === "http://localhost:8080/user/") return;
+        // Only retry up to 3 times.
+        if (retryCount >= 3) return;
 
-        // Only retry up to 10 times.
-        if (retryCount >= 10) return;
-
-        // Retry after 5 seconds.
-        setTimeout(() => revalidate({ retryCount }), 5000);
+        // Retry after 10 seconds.
+        setTimeout(() => revalidate({ retryCount }), 10000);
       },
     }
   );
