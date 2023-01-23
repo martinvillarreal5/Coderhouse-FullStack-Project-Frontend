@@ -13,3 +13,8 @@ export const removeProductFromCart = async (id) => {
   const response = await axios.delete(baseServerUrl + `/cart/product/${id}`);
   return response.data;
 };
+
+export const removeAllProductsFromCart = async () => {
+  axios.defaults.withCredentials = true;
+  const response = await axios.delete(baseServerUrl + `/cart/products`);
+};

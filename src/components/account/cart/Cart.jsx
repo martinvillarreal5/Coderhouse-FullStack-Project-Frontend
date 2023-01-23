@@ -1,14 +1,27 @@
-import { Button, Table, Text, ActionIcon, ThemeIcon } from "@mantine/core";
+import { Button, Table, Text, ActionIcon, Card, Flex } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+
 import { sendNewOrder } from "../../../lib/orderLib";
 import { IconTrash } from "@tabler/icons";
-import { addProductToCart, removeProductFromCart } from "../../../lib/cartLib";
+import {
+  //addProductToCart,
+  removeAllProductsFromCart,
+  removeProductFromCart,
+} from "../../../lib/cartLib";
 
-// implement something like this https://ui.mantine.dev/component/table-scroll-area
-// and this https://ui.mantine.dev/component/table-sort
+import "./cart-table.css";
+
+// https://ui.mantine.dev/component/table-sort
 
 export default function Cart({ cartData, mutate }) {
-  const handleDeleteProduct = async (id, quantity) => {
+  const abbreviateText = useMediaQuery("(max-width: 576px)");
+
+  const handleRemoveProduct = async (id, quantity) => {
     const data = await removeProductFromCart(id, quantity);
+    mutate();
+  };
+  const handleRemoveAllProducts = async () => {
+    const data = await removeAllProductsFromCart();
     mutate();
   };
 
@@ -16,14 +29,14 @@ export default function Cart({ cartData, mutate }) {
   const rows = products.map((element) => (
     <tr key={element.title}>
       <td>{element.title}</td>
-      <td>{element.quantity}</td>
+      <td style={{ textAlign: "center" }}>{element.quantity}</td>
       <td>${element.price}</td>
       <td>${element.price * element.quantity}</td>
       <td>
         <ActionIcon
           color="red"
           onClick={() =>
-            handleDeleteProduct(element.productId, -1 * element.quantity)
+            handleRemoveProduct(element.productId, -1 * element.quantity)
           }
         >
           <IconTrash size={16} stroke={1.5} />
@@ -35,7 +48,7 @@ export default function Cart({ cartData, mutate }) {
   const ths = (
     <tr>
       <th>Product</th>
-      <th>Quantity</th>
+      <th>{abbreviateText ? "Qty." : "Quantity"}</th>
       <th>Unit</th>
       <th>Total</th>
       <th></th>
@@ -44,21 +57,56 @@ export default function Cart({ cartData, mutate }) {
 
   return (
     <>
-      <Table captionSide="bottom" mb="sm">
-        <caption>Products in your Shopping Cart</caption>
-        <thead>{ths}</thead>
-        <tbody>{rows}</tbody>
-        {products.length > 5 && <tfoot>{ths}</tfoot>}
-      </Table>
-      <Text size="xl" weight={750} mb="sm">
-        Total: $
-        {products.reduce(
-          (total, product) =>
-            (total = total + product.price * product.quantity),
-          0
-        )}
-      </Text>
-      <Button onClick={async () => await sendNewOrder()}>Create Order</Button>
+      <Card shadow="sm" mb="md" p="xs" radius="md" withBorder>
+        <Table captionSide="top" mb="sm" withColumnBorders highlightOnHover>
+          {/* <caption>Products in your Shopping Cart</caption> */}
+          <thead>{ths}</thead>
+          <tbody>{rows}</tbody>
+          {products.length > 5 && <tfoot>{ths}</tfoot>}
+        </Table>
+      </Card>
+
+      <Flex justify="space-between" direction="row" wrap="wrap">
+        <Card
+          shadow="sm"
+          p="xs"
+          radius="md"
+          withBorder
+          sx={{ height: "fit-content" }}
+        >
+          <Button
+            color="red"
+            onClick={async () => await handleRemoveAllProducts()}
+          >
+            Empty Cart
+          </Button>
+        </Card>
+
+        <Card shadow="sm" p="xs" radius="md" withBorder>
+          <Flex
+            gap={{ base: "xs", sm: "md" }}
+            align="center"
+            direction={{
+              base: "column",
+              sm: "row",
+            }}
+            wrap="wrap"
+          >
+            <Text size="md" weight={500}>
+              Total: $
+              {products.reduce(
+                (total, product) =>
+                  (total = total + product.price * product.quantity),
+                0
+              )}
+            </Text>
+            <Button onClick={async () => await sendNewOrder()}>
+              Create Order
+            </Button>
+          </Flex>
+        </Card>
+      </Flex>
+      <Flex mt="sm" justify="flex-end" direction="row" wrap="wrap"></Flex>
     </>
   );
 }
