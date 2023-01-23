@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useForm, Controller } from "react-hook-form";
@@ -19,8 +19,6 @@ import { SignUp } from "../../../lib/authLib";
 
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-
-//TODO set message when username or mail is already in use
 
 export default function RegisterForm() {
   const {
