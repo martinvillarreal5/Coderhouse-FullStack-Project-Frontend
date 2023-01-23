@@ -7,8 +7,6 @@ import HookFormNumberInput from "../../inputs/HookFromNumberInput.jsx";
 import ControlledFileInput from "../../inputs/ControlledFileInput.jsx";
 import { Button } from "@mantine/core";
 
-// TODO add image preview
-
 export default function ProductForm(props) {
   const {
     initialValues = {},
@@ -27,7 +25,6 @@ export default function ProductForm(props) {
     defaultValues: initialValues,
     shouldUnregister: true,
   });
-  const onSubmit = async (values, dirtyFields) => {};
 
   return (
     <>
@@ -103,6 +100,16 @@ export default function ProductForm(props) {
           controlName="picture"
           control={control}
           errors={errors?.picture}
+          mb="sm"
+        />
+        <ControlledFileInput
+          label="Back Picture"
+          placeholder="Click to upload the product back picture"
+          withAsterisk
+          disabled={waitingResponse}
+          controlName="backPicture"
+          control={control}
+          errors={errors?.backPicture}
           mb="sm"
         />
         <Button type="submit" loading={waitingResponse}>

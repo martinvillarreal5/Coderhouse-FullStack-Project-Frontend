@@ -8,11 +8,6 @@ import HookFormNumberInput from "../../inputs/HookFromNumberInput.jsx";
 import ControlledFileInput from "../../inputs/ControlledFileInput.jsx";
 import { Button } from "@mantine/core";
 
-// TODO add image preview
-
-// TODO after submit, mutate the Container productData and remount????
-// TODO add message for updated fields
-
 export default function ProductForm(props) {
   const { initialValues = {}, zodSchema, id } = props;
 
@@ -28,6 +23,8 @@ export default function ProductForm(props) {
     defaultValues: initialValues,
   });
   const handleOnSubmit = async (values) => {
+    //TODO move this to container, or move useForm to container and use a formContext
+    //pass this function an object like this {errors: errors, reset: reset,...etc} ?
     try {
       setIsWaiting(true);
       const submitData = values;
@@ -39,6 +36,7 @@ export default function ProductForm(props) {
         updateData[key] = submitData[key];
         return updateData;
       }, {});
+      //! TODO test if instead of doing all of the above, just using the dirtyfield would work
       const updatedProduct = await updateProduct(id, updateData);
       console.log(updatedProduct);
       reset(values, {
@@ -48,9 +46,10 @@ export default function ProductForm(props) {
       setIsWaiting(false);
     } catch (error) {
       /* reset(values, {
-        // ! TODO: config this right
-        //keepValues: true,
+        keepValues: true,
       }); */
+      // ! TODO: config reset right
+      //TODO If api call didnt work show an error message to user
       setIsWaiting(false);
       console.log(error);
     }
@@ -66,7 +65,7 @@ export default function ProductForm(props) {
           registerName="title"
           errors={errors?.title}
         />
-        <HookFormTextInput //TODO make a multi select and save as array
+        <HookFormTextInput
           label="Category"
           disabled={isWaiting}
           register={register}
